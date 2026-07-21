@@ -43,6 +43,4 @@ class PosState {
       error: error ?? this.error,
     );
   }
-
-
 }

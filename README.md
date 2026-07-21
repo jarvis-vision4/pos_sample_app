@@ -1,6 +1,6 @@
 # POS Sample App
 
-A Point-of-Sale (POS) mobile application built with **Flutter** and **Dart**, following a layered architecture with BLoC state management.
+A Point-of-Sale (POS) mobile application built with **Flutter** and **Dart**, following a layered architecture with BLoC/Cubit state management.
 
 ## Tech Stack
 
@@ -13,73 +13,85 @@ A Point-of-Sale (POS) mobile application built with **Flutter** and **Dart**, fo
 | DI / Service Loc.  | get_it               |
 | Linting            | flutter_lints        |
 
-## Project Structure
+## Architecture
 
 ```
 lib/
-├── main.dart                           # App entry point
+├── main.dart                           # App entry point (GetIt init, routing, MultiBlocProvider)
 ├── constants/
-│   └── api_constants.dart              # API base URL & endpoint constants
+│   └── api_constants.dart              # FakeStore API base URL & endpoint constants
 ├── data/
 │   ├── models/
-│   │   └── product.dart                # Product & Rating models (JSON serialization)
+│   │   ├── product.dart                # Product & Rating models (JSON serialization)
+│   │   └── cart_item.dart              # CartItem model (product + quantity)
 │   └── services/
 │       ├── api_service.dart            # REST API service (Dio-based)
-│       └── database_service.dart       # SQLite local database service
+│       └── database_service.dart       # SQLite DB (orders + order_items tables)
 ├── locator/
-│   └── locator.dart                    # Dependency injection setup (GetIt)
+│   └── locator.dart                    # GetIt: registers Dio, ApiService, DatabaseService
 ├── presentation/
-│   └── screens/                        # UI screens (pending implementation)
+│   └── screens/
+│       ├── dashboard/
+│       │   ├── cubit/
+│       │   │   ├── dashboard_cubit.dart
+│       │   │   └── dashboard_state.dart
+│       │   └── dashboard_screen.dart   # Home screen with POS & Orders nav cards
+│       ├── pos/
+│       │   ├── cubit/
+│       │   │   ├── pos_cubit.dart
+│       │   │   └── pos_state.dart
+│       │   ├── widgets/
+│       │   │   └── category_filter.dart
+│       │   └── pos_screen.dart         # Category chips + product grid
+│       └── cart/
+│           └── cart_screen.dart
 └── routes/
     ├── app_router.dart                 # Named route generation
     └── app_routes.dart                 # Route name constants
 ```
 
-## Architecture
+## Routes
 
-The project follows a **layered architecture**:
+| Route              | Screen              | Status      |
+|--------------------|---------------------|-------------|
+| `/`                | DashboardScreen     | Active      |
+| `/pos`             | PosScreen           | Active      |
+| `/customer-selection` | —               | Commented   |
+| `/cart`            | CartScreen          | Commented   |
+| `/orders`          | —                   | Commented   |
 
-- **`constants/`** — App-wide constants (API endpoints, configuration)
-- **`data/models/`** — Data models with `fromJson`/`toJson` serialization
-- **`data/services/`** — Data access layer (remote API via Dio, local DB via sqflite)
-- **`locator/`** — Dependency injection (GetIt service locator)
-- **`presentation/screens/`** — UI screens using BLoC for state management
-- **`routes/`** — Named route definitions and navigation logic
+## Progress
 
-## Planned Screens
+### Completed
+- Project scaffolding and dependency setup
+- `Product` / `Rating` / `CartItem` data models with JSON serialization
+- `ApiService` — `getAllProducts()` and `getCategories()` implemented
+- `DatabaseService` — SQLite init with `orders` and `order_items` table schema
+- `GetIt` locator with `Dio`, `ApiService`, `DatabaseService` singletons
+- `main.dart` wired with locator init, `MultiBlocProvider`, and `MaterialApp` routing
+- `DashboardScreen` — two navigation cards (POS, Orders)
+- `PosScreen` — category chips + product grid with loading state
+- `PosCubit` — `loadProducts()` and `loadCategories()` with error handling
+- Route constants and router scaffold (dashboard + POS active)
 
-- **Dashboard** (`/`) — Overview and quick actions
-- **POS Terminal** (`/pos`) — Point-of-sale transaction flow
-- **Customer Selection** (`/customer-selection`) — Customer lookup / selection
-- **Cart** (`/cart`) — Order review and checkout
-- **Orders** (`/orders`) — Order history and management
+### Partial / In Progress
+- `DashboardCubit` — `loadDashboardData()` exists but body is empty
+- `PosState` — `selectedCategory` and `cart` fields defined but not yet wired to cubit methods
+- `CartScreen` — scaffold exists but no UI content
 
-## Current Progress
-
-The project is in its **early scaffolding phase**:
-
-- [x] Project setup & dependency declarations
-- [x] Data models (Product, Rating) with JSON serialization
-- [x] Dio HTTP client configured (FakeStore API)
-- [x] GetIt service locator registered
-- [x] Route constants and router scaffold
-- [ ] BLoC classes (not yet implemented)
-- [ ] API service methods
-- [ ] Database service implementation
-- [ ] Screen UIs (all pending)
-- [ ] Route wiring in `main.dart`
-- [ ] Tests
+### Not Started
+- `CategoryFilter` widget (currently a `Placeholder`)
+- Category filtering (`filterByCategory`)
+- Cart operations (`addToCart`, `removeFromCart`)
+- Customer selection screen
+- Order list screen
+- Tests
 
 ## Getting Started
 
 ```bash
-# Install dependencies
 flutter pub get
-
-# Run the app
 flutter run
-
-# Run tests
 flutter test
 ```
 

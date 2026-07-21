@@ -28,4 +28,13 @@ class ApiService {
       throw Exception('Failed to load categories: $e');
     }
   }
+  Future<List<Product>> getProductsByCategory(String category) async {
+    try {
+      final response = await _dio.get('/products/category/$category');
+      final List<dynamic> data = response.data;
+      return data.map((json) => Product.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to load products by category: $e');
+    }
+  }
 }
