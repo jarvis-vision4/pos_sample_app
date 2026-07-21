@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/locator/locator.dart';
+import 'package:pos_sample_app/presentation/screens/cart/cart_screen.dart';
+import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
 import 'package:pos_sample_app/presentation/screens/pos/cubit/pos_cubit.dart';
 import 'package:pos_sample_app/presentation/screens/pos/pos_screen.dart';
 import 'package:pos_sample_app/routes/app_router.dart';
@@ -23,6 +25,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) => PosCubit(),
             child: PosScreen(),
+        ),
+        BlocProvider(
+          create: (context) => CartCubit(),
+          child: CartScreen(),
         ),
       ],
       child: MaterialApp(

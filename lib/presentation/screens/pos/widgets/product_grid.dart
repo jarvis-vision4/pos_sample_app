@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
 
+import '../../cart/cubit/cart_cubit.dart';
 import '../cubit/pos_cubit.dart';
 import '../cubit/pos_state.dart';
 
@@ -63,8 +65,12 @@ class ProductGrid extends StatelessWidget {
       itemCount: state.filteredProducts.length,
       itemBuilder: (context, index) {
         final product = state.filteredProducts[index];
-        final cartItem = state.cart
-            .where((item) => item.product.id == product.id)
+        // final cartItem = state.cart
+        //     .where((item) => item.product.id == product.id)
+        //     .firstOrNull;
+        // final quantityInCart = cartItem?.quantity ?? 0;
+        final cartState = context.watch<CartCubit>().state;
+        final cartItem = cartState.items.where((item) => item.product.id == product.id)
             .firstOrNull;
         final quantityInCart = cartItem?.quantity ?? 0;
         return Card(
@@ -125,7 +131,7 @@ class ProductGrid extends StatelessWidget {
                                   children: [
                                     InkWell(
                                       onTap: (){
-                                        context.read<PosCubit>().decreaseQuantity(product.id!);
+                                        context.read<CartCubit>().decreaseQuantity(product.id!);
                                       },
                                       child: const Icon(Icons.remove, size: 18),
                                     ),
@@ -141,7 +147,7 @@ class ProductGrid extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        context.read<PosCubit>().increaseQuantity(product.id!);
+                                        context.read<CartCubit>().increaseQuantity(product.id!);
                                       },
                                       child: const Icon(Icons.add, size: 18),
                                     ),
@@ -153,7 +159,7 @@ class ProductGrid extends StatelessWidget {
                             InkWell(
                               onTap: (){
                                 print('Add to cart: ${product.id}');
-                                context.read<PosCubit>().addToCart(product);
+                                context.read<CartCubit>().addToCart(product);
                               },
                               child: const Icon(
                                 Icons.add_circle,

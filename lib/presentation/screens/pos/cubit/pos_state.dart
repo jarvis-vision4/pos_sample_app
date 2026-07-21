@@ -6,7 +6,6 @@ class PosState {
   final List<Product> filteredProducts;
   final List<String> categories;
   final String? selectedCategory;
-  final List<CartItem> cart;
   final bool isLoadingProducts;
   final bool isLoadingCategories;
   final String? error;
@@ -16,7 +15,6 @@ class PosState {
     this.filteredProducts = const [],
     this.categories = const [],
     this.selectedCategory,
-    this.cart = const [],
     this.isLoadingProducts = false,
     this.isLoadingCategories = false,
     this.error,
@@ -37,7 +35,6 @@ class PosState {
       filteredProducts: filteredProducts ?? this.filteredProducts,
       categories: categories ?? this.categories,
       selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
-      cart: cart ?? this.cart,
       isLoadingProducts: isLoadingProducts ?? this.isLoadingProducts,
       isLoadingCategories: isLoadingCategories ?? this.isLoadingCategories,
       error: error ?? this.error,
