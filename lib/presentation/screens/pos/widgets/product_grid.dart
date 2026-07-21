@@ -37,23 +37,6 @@ class ProductGrid extends StatelessWidget {
       );
     }
 
-    // if (state.filteredProducts.isEmpty) {
-    //   return Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Icon(Icons.inventory_2_outlined,
-    //             size: 48, color: Colors.grey[400]),
-    //         const SizedBox(height: 16),
-    //         Text(
-    //           'No products found',
-    //           style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
-
     return GridView.builder(
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

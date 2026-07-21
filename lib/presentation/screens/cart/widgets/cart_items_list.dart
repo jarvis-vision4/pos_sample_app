@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
@@ -10,14 +11,12 @@ class CartItemsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
-        int itemsCount=state.items.length;
-        if(itemsCount==0){
-          return const Center(
-            child: Text("No items in the cart"),
-          );
+        int itemsCount = state.items.length;
+        if (itemsCount == 0) {
+          return const Center(child: Text("No items in the cart"));
         }
         return ListView.builder(
-          itemCount:itemsCount,
+          itemCount: itemsCount,
           itemBuilder: (context, index) {
             final item = state.items[index];
             return Card(
@@ -28,12 +27,12 @@ class CartItemsList extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        item.product.image ?? "",
+                      child: CachedNetworkImage(
+                        imageUrl: item.product.image ?? "",
                         width: 50,
                         height: 50,
                         fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
+                        errorWidget: (context, url, error) {
                           return Container(
                             width: 50,
                             height: 50,
@@ -81,11 +80,22 @@ class CartItemsList extends StatelessWidget {
                     Column(
                       children: [
                         IconButton(
-                          onPressed: (){
-
+                          onPressed: () {
+                            context.read<CartCubit>().removeItem(
+                              item.product.id!,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Item removed from cart"),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
                           },
-                          icon: const Icon(Icons.delete_outline,
-                              color: Colors.red, size: 20),
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.red,
+                            size: 20,
+                          ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                         ),
@@ -94,26 +104,40 @@ class CartItemsList extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              onPressed: (){
-
+                              onPressed: () {
+                                context.read<CartCubit>().decreaseQuantity(
+                                  item.product.id!,
+                                );
                               },
-                              icon: const Icon(Icons.remove_circle_outline, size: 22),
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                size: 22,
+                              ),
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               child: Text(
                                 '${item.quantity}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             IconButton(
-                              onPressed: (){
-
+                              onPressed: () {
+                                context.read<CartCubit>().increaseQuantity(
+                                  item.product.id!,
+                                );
                               },
-                              icon: const Icon(Icons.add_circle_outline,
-                                  size: 22, color: Color(0xFF00B894)),
+                              icon: const Icon(
+                                Icons.add_circle_outline,
+                                size: 22,
+                                color: Color(0xFF00B894),
+                              ),
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                             ),

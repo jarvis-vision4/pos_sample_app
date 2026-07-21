@@ -18,11 +18,11 @@ class CartCubit extends Cubit<CartState>{
       updatedCart[existingIndex] = cartItem.copyWith(
         quantity: cartItem.quantity + 1,
       );
-      emit(state.copyWith(cart: updatedCart));
+      emit(state.copyWith(items: updatedCart));
     } else {
       emit(
         state.copyWith(
-          cart: [
+          items: [
             ...state.items,
             CartItem(product: product),
           ],
@@ -35,7 +35,7 @@ class CartCubit extends Cubit<CartState>{
     final updatedCart = state.items
         .where((item) => item.product.id != productId)
         .toList();
-    emit(state.copyWith(cart: updatedCart));
+    emit(state.copyWith(items: updatedCart));
   }
 
   void increaseQuantity(int productId) {
@@ -48,7 +48,7 @@ class CartCubit extends Cubit<CartState>{
       updatedCart[existingIndex] = cartItem.copyWith(
         quantity: cartItem.quantity + 1,
       );
-      emit(state.copyWith(cart: updatedCart));
+      emit(state.copyWith(items: updatedCart));
     }
   }
 
@@ -64,10 +64,17 @@ class CartCubit extends Cubit<CartState>{
         updatedCart[existingIndex] = cartItem.copyWith(
           quantity: currentQty - 1,
         );
-        emit(state.copyWith(cart: updatedCart));
+        emit(state.copyWith(items: updatedCart));
       } else {
         removeFromCart(productId);
       }
     }
   }
+  void removeItem(int productId) {
+    final updatedItems = state.items
+        .where((item) => item.product.id != productId)
+        .toList();
+    emit(state.copyWith(items: updatedItems));
+  }
+
 }
