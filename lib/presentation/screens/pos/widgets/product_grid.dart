@@ -58,7 +58,7 @@ class ProductGrid extends StatelessWidget {
         crossAxisCount: 2,
         childAspectRatio: 0.7,
         crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        mainAxisSpacing: 10,
       ),
       itemCount: state.filteredProducts.length,
       itemBuilder: (context, index) {
@@ -123,13 +123,11 @@ class ProductGrid extends StatelessWidget {
                               builder: (context) {
                                 return Row(
                                   children: [
-                                    IconButton(
-                                      onPressed: (){
-
+                                    InkWell(
+                                      onTap: (){
+                                        context.read<PosCubit>().decreaseQuantity(product.id!);
                                       },
-                                      icon: const Icon(Icons.remove, size: 18),
-                                      padding: const EdgeInsets.all(4),
-                                      constraints: const BoxConstraints(),
+                                      child: const Icon(Icons.remove, size: 18),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -141,31 +139,27 @@ class ProductGrid extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    IconButton(
-                                      onPressed: (){
-
+                                    InkWell(
+                                      onTap: (){
+                                        context.read<PosCubit>().increaseQuantity(product.id!);
                                       },
-                                      icon: const Icon(Icons.add, size: 18),
-                                      padding: const EdgeInsets.all(4),
-                                      constraints: const BoxConstraints(),
+                                      child: const Icon(Icons.add, size: 18),
                                     ),
                                   ],
                                 );
                               }
                             )
                           else
-                            IconButton(
-                              onPressed: (){
+                            InkWell(
+                              onTap: (){
                                 print('Add to cart: ${product.id}');
                                 context.read<PosCubit>().addToCart(product);
                               },
-                              icon: const Icon(
+                              child: const Icon(
                                 Icons.add_circle,
                                 color: Color(0xFF00B894),
                                 size: 28,
                               ),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
                             ),
                         ],
                       ),

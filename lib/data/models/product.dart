@@ -19,7 +19,7 @@ class Product {
     rating = json['rating'] != null ? Rating.fromJson(json['rating']) : null;
   }
 
-  num? id;
+  int? id;
   String? title;
   num? price;
   String? description;
@@ -28,7 +28,7 @@ class Product {
   Rating? rating;
 
   Product copyWith({
-    num? id,
+    int? id,
     String? title,
     num? price,
     String? description,

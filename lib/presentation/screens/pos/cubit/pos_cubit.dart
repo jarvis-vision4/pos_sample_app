@@ -75,4 +75,44 @@ class PosCubit extends Cubit<PosState> {
       );
     }
   }
+
+  void removeFromCart(int productId) {
+    final updatedCart = state.cart
+        .where((item) => item.product.id != productId)
+        .toList();
+    emit(state.copyWith(cart: updatedCart));
+  }
+
+  void increaseQuantity(int productId) {
+    final existingIndex = state.cart.indexWhere(
+      (item) => item.product.id == productId,
+    );
+    if (existingIndex >= 0) {
+      final updatedCart = List<CartItem>.from(state.cart);
+      final cartItem = updatedCart[existingIndex];
+      updatedCart[existingIndex] = cartItem.copyWith(
+        quantity: cartItem.quantity + 1,
+      );
+      emit(state.copyWith(cart: updatedCart));
+    }
+  }
+
+  void decreaseQuantity(int productId) {
+    final existingIndex = state.cart.indexWhere(
+      (item) => item.product.id == productId,
+    );
+    if (existingIndex >= 0) {
+      final updatedCart = List<CartItem>.from(state.cart);
+      final cartItem = updatedCart[existingIndex];
+      final currentQty = cartItem.quantity;
+      if (currentQty > 1) {
+        updatedCart[existingIndex] = cartItem.copyWith(
+          quantity: currentQty - 1,
+        );
+        emit(state.copyWith(cart: updatedCart));
+      } else {
+        removeFromCart(productId);
+      }
+    }
+  }
 }
