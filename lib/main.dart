@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/locator/locator.dart';
+import 'package:pos_sample_app/presentation/screens/pos/cubit/pos_cubit.dart';
+import 'package:pos_sample_app/presentation/screens/pos/pos_screen.dart';
 import 'package:pos_sample_app/routes/app_router.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
 
@@ -15,14 +18,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      initialRoute: AppRoutes.dashboard,
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => PosCubit(),
+            child: PosScreen(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        initialRoute: AppRoutes.dashboard,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        theme: ThemeData(
+          colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        ),
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

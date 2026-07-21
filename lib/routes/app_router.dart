@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../presentation/screens/dashboard/dashboard_screen.dart';
+import '../presentation/screens/pos/pos_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -11,11 +12,11 @@ class AppRouter {
           builder: (_) => const DashboardScreen(),
         );
 
-      // case AppRoutes.pos:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const PosScreen(),
-      //   );
-      //
+      case AppRoutes.pos:
+        return MaterialPageRoute(
+          builder: (_) => const PosScreen(),
+        );
+
       // case AppRoutes.customerSelection:
       //   return MaterialPageRoute(
       //     builder: (_) => const CustomerSelectionScreen(),

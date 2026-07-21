@@ -1,9 +1,13 @@
 class DashboardState {
-  final int counter;
+  final bool isLoading;
 
-  const DashboardState({this.counter = 0});
+  const DashboardState({
+    this.isLoading = true,
+  });
 
-  DashboardState copyWith({int? counter}) {
-    return DashboardState(counter: counter ?? this.counter);
+  DashboardState copyWith({bool? isLoading,}) {
+    return DashboardState(
+      isLoading: isLoading ?? this.isLoading,
+    );
   }
 }
