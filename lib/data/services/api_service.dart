@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../constants/api_constants.dart';
+import '../models/customer.dart';
 import '../models/product.dart';
 
 
@@ -32,9 +33,18 @@ class ApiService {
     try {
       final response = await _dio.get('/products/category/$category');
       final List<dynamic> data = response.data;
-      return data.map((json) => Product.fromJson(json)).toList();
+      return data.map((product) => Product.fromJson(product)).toList();
     } catch (e) {
       throw Exception('Failed to load products by category: $e');
+    }
+  }
+  Future<List<Customer>> getAllCustomers() async {
+    try {
+      final response = await _dio.get('/users');
+      final List<dynamic> data = response.data;
+      return data.map((customer) => Customer.fromJson(customer)).toList();
+    } catch (e) {
+      throw Exception('Failed to load customers: $e');
     }
   }
 }

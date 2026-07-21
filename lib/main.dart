@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/locator/locator.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cart_screen.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
+import 'package:pos_sample_app/presentation/screens/customer_selection/customer_selection_screen.dart';
 import 'package:pos_sample_app/presentation/screens/pos/cubit/pos_cubit.dart';
 import 'package:pos_sample_app/presentation/screens/pos/pos_screen.dart';
 import 'package:pos_sample_app/routes/app_router.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
+
+import 'presentation/screens/customer_selection/cubit/customer_cubit.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +32,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => CartCubit(),
           child: CartScreen(),
+        ),
+        BlocProvider(
+          create: (context) => CustomerCubit(),
+          child: CustomerSelectionScreen(),
         ),
       ],
       child: MaterialApp(
