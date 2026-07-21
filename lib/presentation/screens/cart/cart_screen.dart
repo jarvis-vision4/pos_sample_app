@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:pos_sample_app/presentation/screens/cart/widgets/cart_items_list.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -7,9 +8,18 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Cart & Checkout Screen")),
-      body: const Center(
-        child: Text("Cart Screen"),
+      appBar: AppBar(
+          title: const Text("Cart & Checkout Screen"),
+          actions: [
+
+          ],
+      ),
+      body: Column(
+        children: [
+            Expanded(
+                child: CartItemsList()
+            )
+        ],
       ),
     );
   }
