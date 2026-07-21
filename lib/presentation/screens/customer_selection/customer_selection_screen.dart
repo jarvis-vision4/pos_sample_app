@@ -42,6 +42,7 @@ class _CustomerSelectionScreenState extends State<CustomerSelectionScreen> {
                       title: Text(customer.name),
                       subtitle: Text(customer.email),
                       onTap: (){
+                        context.read<CustomerCubit>().selectCustomer(customer);
                         Navigator.pop(context, customer);
                       },
                     );

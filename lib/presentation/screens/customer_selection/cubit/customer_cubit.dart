@@ -3,6 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:pos_sample_app/data/services/api_service.dart';
 import 'package:pos_sample_app/presentation/screens/customer_selection/cubit/customer_state.dart';
 
+import '../../../../data/models/customer.dart';
+
 class CustomerCubit extends Cubit<CustomerState>{
   final ApiService _apiService=GetIt.I.get<ApiService>();
   CustomerCubit(): super(const CustomerState());
@@ -20,6 +22,9 @@ class CustomerCubit extends Cubit<CustomerState>{
         error: e.toString(),
       ));
     }
+  }
+  void selectCustomer(Customer customer) {
+    emit(state.copyWith(selectedCustomer: customer));
   }
 
 }

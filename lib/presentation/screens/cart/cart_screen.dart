@@ -29,7 +29,9 @@ class CartScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: ()async{
                   final customer=await Navigator.pushNamed(context, AppRoutes.customerSelection);
-                  print(customer);
+                  if(customer is Customer){
+                    print(customer.name);
+                  }
                 },
                 child: const Text('Select Customer'),
               ),
