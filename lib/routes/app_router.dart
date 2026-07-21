@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../presentation/screens/dashboard/dashboard_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // case AppRoutes.dashboard:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const DashboardScreen(),
-      //   );
-      //
+      case AppRoutes.dashboard:
+        return MaterialPageRoute(
+          builder: (_) => const DashboardScreen(),
+        );
+
       // case AppRoutes.pos:
       //   return MaterialPageRoute(
       //     builder: (_) => const PosScreen(),
