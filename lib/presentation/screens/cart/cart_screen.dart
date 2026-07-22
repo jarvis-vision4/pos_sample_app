@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
 import 'package:pos_sample_app/presentation/screens/cart/widgets/cart_items_list.dart';
+import 'package:pos_sample_app/presentation/screens/cart/widgets/checkout_section.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
 
 import '../../../data/models/customer.dart';
@@ -84,41 +85,7 @@ class CartScreen extends StatelessWidget {
               ),
 
               Expanded(child: CartItemsList(state:state)),
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Total Items:'),
-                        Text(
-                          '${state.totalQuantity}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Total Amount:',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          "Ks ${state.totalAmount}",
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF0984E3),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
+              CheckoutSection(state: state)
             ],
           );
         },

@@ -23,8 +23,7 @@ class CartState {
   double get totalAmount => items.fold(0.0, (double sum, CartItem item) => sum + item.subtotal);
 
 
-  bool get canCheckOut {
-    return selectedCustomer != null && items.isNotEmpty;
-  }
+  bool get canCheckOut => selectedCustomer != null && items.isNotEmpty;
+
 
 }
