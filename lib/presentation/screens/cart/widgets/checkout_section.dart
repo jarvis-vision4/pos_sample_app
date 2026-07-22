@@ -1,9 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
-
-import '../cubit/cart_cubit.dart';
 
 class CheckoutSection extends StatelessWidget {
   const CheckoutSection({super.key, required this.state});
