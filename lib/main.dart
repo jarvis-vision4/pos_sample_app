@@ -27,15 +27,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (context) => PosCubit(),
-            child: PosScreen(),
         ),
         BlocProvider(
           create: (context) => CartCubit(),
-          child: CartScreen(),
         ),
         BlocProvider(
           create: (context) => CustomerCubit(),
-          child: CustomerSelectionScreen(),
         ),
       ],
       child: MaterialApp(
