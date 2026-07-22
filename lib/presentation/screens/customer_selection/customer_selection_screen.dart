@@ -29,6 +29,19 @@ class _CustomerSelectionScreenState extends State<CustomerSelectionScreen> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 8, vertical: 4),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Search Customer',
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (value) {
+                print(value);
+                context.read<CustomerCubit>().searchCustomers(value.trim());
+              },
+            ),
+          ),
           Expanded(
               child: BlocBuilder<CustomerCubit,CustomerState>(builder: (context,state){
                 if(state.isLoading){
