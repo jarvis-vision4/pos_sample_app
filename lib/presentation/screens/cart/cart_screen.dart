@@ -98,6 +98,24 @@ class CartScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Total Amount:',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Text(
+                          "Ks ${state.totalAmount}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0984E3),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               )

@@ -20,9 +20,8 @@ class CartState {
   int get totalQuantity => items.fold(0, (int sum, CartItem item) => sum + item.quantity);
 
 
-  double get totalAmount {
-    return items.fold(0.0, (double sum, CartItem item) => sum + item.subtotal);
-  }
+  double get totalAmount => items.fold(0.0, (double sum, CartItem item) => sum + item.subtotal);
+
 
   bool get canCheckOut {
     return selectedCustomer != null && items.isNotEmpty;
