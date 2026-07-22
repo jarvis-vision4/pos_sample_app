@@ -17,9 +17,8 @@ class CartState {
         selectedCustomer: selectedCustomer ?? this.selectedCustomer);
   }
 
-  int get totalQuantity {
-    return items.fold(0, (int sum, CartItem item) => sum + item.quantity);
-  }
+  int get totalQuantity => items.fold(0, (int sum, CartItem item) => sum + item.quantity);
+
 
   double get totalAmount {
     return items.fold(0.0, (double sum, CartItem item) => sum + item.subtotal);

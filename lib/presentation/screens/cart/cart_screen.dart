@@ -84,6 +84,23 @@ class CartScreen extends StatelessWidget {
               ),
 
               Expanded(child: CartItemsList(state:state)),
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total Items:'),
+                        Text(
+                          '${state.totalQuantity}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           );
         },
