@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
 
 import '../../../../data/models/cart_item.dart';
+import '../../../../data/models/customer.dart';
 import '../../../../data/models/product.dart';
 
 class CartCubit extends Cubit<CartState>{
@@ -76,5 +77,9 @@ class CartCubit extends Cubit<CartState>{
         .toList();
     emit(state.copyWith(items: updatedItems));
   }
+  void setCustomer(Customer customer) {
+    emit(state.copyWith(selectedCustomer: customer));
+  }
+
 
 }
