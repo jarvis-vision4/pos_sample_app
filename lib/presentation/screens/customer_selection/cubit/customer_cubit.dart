@@ -13,24 +13,24 @@ class CustomerCubit extends Cubit<CustomerState> {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       final customers = await _apiService.getAllCustomers();
-      emit(state.copyWith(customers: customers, isLoading: false));
+      emit(state.copyWith(filteredCustomers: customers,customers: customers, isLoading: false));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
-  void searchCustomers(String query) {
+  void filterCustomers(String query) {
     if (query.isEmpty) {
-      emit(state.copyWith(customers: state.customers, searchQuery: ''));
+      emit(state.copyWith(filteredCustomers: state.customers, searchQuery: ''));
     } else {
       final filtered = state.customers
           .where(
             (c) =>
-                c.name.toLowerCase().contains(query.toLowerCase()) || c.email.toLowerCase().contains(query.toLowerCase()),
+                c.name.toLowerCase().contains(query.toLowerCase()) ||
+                c.email.toLowerCase().contains(query.toLowerCase()),
           )
           .toList();
-      emit(state.copyWith(customers: filtered, searchQuery: query));
+      emit(state.copyWith(filteredCustomers: filtered, searchQuery: query));
     }
   }
-
 }

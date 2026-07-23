@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
@@ -10,24 +9,23 @@ class CustomerSelectionScreen extends StatefulWidget {
   const CustomerSelectionScreen({super.key});
 
   @override
-  State<CustomerSelectionScreen> createState() => _CustomerSelectionScreenState();
+  State<CustomerSelectionScreen> createState() =>
+      _CustomerSelectionScreenState();
 }
 
 class _CustomerSelectionScreenState extends State<CustomerSelectionScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CustomerCubit>().loadCustomers();
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Select Customer"),
-      ),
+      appBar: AppBar(title: Text("Select Customer")),
       body: Column(
         children: [
           Padding(
@@ -39,30 +37,32 @@ class _CustomerSelectionScreenState extends State<CustomerSelectionScreen> {
               ),
               onChanged: (value) {
                 print(value);
-                context.read<CustomerCubit>().searchCustomers(value.trim());
+                context.read<CustomerCubit>().filterCustomers(value.trim());
               },
             ),
           ),
           Expanded(
-              child: BlocBuilder<CustomerCubit,CustomerState>(builder: (context,state){
-                if(state.isLoading){
-                  return const Center(child: CircularProgressIndicator(),);
+            child: BlocBuilder<CustomerCubit, CustomerState>(
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
                 }
                 return ListView.builder(
-                  itemCount: state.customers.length,
-                  itemBuilder: (context,index){
-                    final customer=state.customers[index];
+                  itemCount: state.filteredCustomers.length,
+                  itemBuilder: (context, index) {
+                    final customer = state.filteredCustomers[index];
                     return ListTile(
                       title: Text(customer.name),
                       subtitle: Text(customer.email),
-                      onTap: (){
+                      onTap: () {
                         Navigator.pop(context, customer);
                       },
                     );
                   },
                 );
-              })
-          )
+              },
+            ),
+          ),
         ],
       ),
     );
