@@ -13,7 +13,7 @@ class CustomerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedCustomer=state.selectedCustomer;
+    final selectedCustomer = state.selectedCustomer;
     return Container(
       padding: EdgeInsets.all(16),
       child: Row(

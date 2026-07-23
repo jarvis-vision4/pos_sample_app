@@ -1,12 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
-
 import '../../../../data/models/cart_item.dart';
 import '../../../../data/models/customer.dart';
 import '../../../../data/models/order.dart';
 import '../../../../data/models/product.dart';
+import '../../../../data/services/database_service.dart';
+import '../../../../locator/locator.dart';
+import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
+  final DatabaseService _databaseService=getIt.get<DatabaseService>();
   CartCubit() : super(const CartState());
 
   void addToCart(Product product) {
@@ -84,9 +86,9 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(selectedCustomer: customer));
   }
 
-  void checkout() {
+  void checkout(Customer customer) {
     if (state.canCheckOut) {
-      emit(state.copyWith(isCheckingOut: true, checkoutSuccess: true));
+      emit(state.copyWith(isCheckingOut: true, checkoutSuccess: true,selectedCustomer: customer));
       final orderItems = state.items.map((cartItem) {
         return OrderItem(
           productId: cartItem.product.id,
@@ -100,16 +102,27 @@ class CartCubit extends Cubit<CartState> {
       for (var item in orderItems) {
         print(item.productName);
       }
+      final now = DateTime.now();
+      final dateInt = now.year * 10000 + now.month * 100 + now.day;
+      final order = Order(
+        orderNumber:dateInt,
+        customerId: state.selectedCustomer!.id,
+        customerName: state.selectedCustomer!.name,
+        orderDate: DateTime.now(),
+        totalQuantity: state.totalQuantity,
+        totalAmount: state.totalAmount,
+        items: orderItems,
+      );
+      print(order.customerName);
     }
     emit(
       state.copyWith(
         isCheckingOut: false,
-        selectedCustomer:null,
         items: [],
       ),
     );
   }
   void resetCheckout(){
-    emit(state.copyWith(checkoutSuccess: false));
+    emit(state.copyWith(checkoutSuccess: false,selectedCustomer:null));
   }
 }

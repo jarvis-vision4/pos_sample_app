@@ -21,7 +21,7 @@ class CartState {
   }) {
     return CartState(
         items: items ?? this.items,
-        selectedCustomer: selectedCustomer,
+        selectedCustomer: selectedCustomer ?? this.selectedCustomer,
         isCheckingOut: isCheckingOut ?? this.isCheckingOut,
         checkoutSuccess: checkoutSuccess ?? this.checkoutSuccess
     );

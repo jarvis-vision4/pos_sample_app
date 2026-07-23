@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_sample_app/data/models/customer.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
-import 'package:pos_sample_app/routes/app_routes.dart';
-
 import '../cubit/cart_cubit.dart';
 
 class CheckoutSection extends StatelessWidget {
   const CheckoutSection({super.key, required this.state});
   final CartState state;
+
   @override
   Widget build(BuildContext context) {
+    final selectedCustomer = state.selectedCustomer;
     return  Container(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -46,7 +47,7 @@ class CheckoutSection extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed:state.canCheckOut ? ()=>_showCheckoutDialog(context):null,
+              onPressed:state.canCheckOut ? ()=>_showCheckoutDialog(context,selectedCustomer):null,
               child: state.isCheckingOut
                   ? const SizedBox(
                 height: 20,
@@ -66,7 +67,7 @@ class CheckoutSection extends StatelessWidget {
       ),
     );
   }
-  void _showCheckoutDialog(BuildContext context) {
+  void _showCheckoutDialog(BuildContext context,Customer? customer) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -79,7 +80,7 @@ class CheckoutSection extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<CartCubit>().checkout();
+              context.read<CartCubit>().checkout(customer!);
               Navigator.pop(ctx);
             },
             child: const Text('Confirm'),
