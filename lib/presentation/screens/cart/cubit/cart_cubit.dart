@@ -3,6 +3,7 @@ import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
 
 import '../../../../data/models/cart_item.dart';
 import '../../../../data/models/customer.dart';
+import '../../../../data/models/order.dart';
 import '../../../../data/models/product.dart';
 
 class CartCubit extends Cubit<CartState> {
@@ -86,6 +87,19 @@ class CartCubit extends Cubit<CartState> {
   void checkout() {
     if (state.canCheckOut) {
       emit(state.copyWith(isCheckingOut: true, checkoutSuccess: true));
+      final orderItems = state.items.map((cartItem) {
+        return OrderItem(
+          productId: cartItem.product.id,
+          productName: cartItem.product.title,
+          productImage: cartItem.product.image,
+          unitPrice: cartItem.product.price.toDouble(),
+          quantity: cartItem.quantity,
+          subtotal: cartItem.subtotal.toDouble(),
+        );
+      }).toList();
+      for (var item in orderItems) {
+        print(item.productName);
+      }
     }
     emit(
       state.copyWith(

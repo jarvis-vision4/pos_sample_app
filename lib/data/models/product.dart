@@ -1,15 +1,22 @@
 class Product {
+  late int id;
+  late String title;
+  late num price;
+  late String description;
+  late String category;
+  late String image;
+  Rating? rating;
   Product({
-    this.id,
-    this.title,
-    this.price,
-    this.description,
-    this.category,
-    this.image,
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.description,
+    required this.category,
+    required this.image,
     this.rating,
   });
 
-  Product.fromJson(dynamic json) {
+  Product.fromJson(Map<String,dynamic> json) {
     id = json['id'];
     title = json['title'];
     price = json['price'];
@@ -18,14 +25,6 @@ class Product {
     image = json['image'];
     rating = json['rating'] != null ? Rating.fromJson(json['rating']) : null;
   }
-
-  int? id;
-  String? title;
-  num? price;
-  String? description;
-  String? category;
-  String? image;
-  Rating? rating;
 
   Product copyWith({
     int? id,
