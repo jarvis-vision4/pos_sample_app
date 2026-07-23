@@ -16,12 +16,13 @@ class CartState {
   CartState copyWith({
     List<CartItem>? items,
     Customer? selectedCustomer,
+    bool clearCustomer = false,
     bool? isCheckingOut,
     bool? checkoutSuccess
   }) {
     return CartState(
         items: items ?? this.items,
-        selectedCustomer: selectedCustomer ?? this.selectedCustomer,
+        selectedCustomer: clearCustomer ? null : (selectedCustomer ?? this.selectedCustomer),
         isCheckingOut: isCheckingOut ?? this.isCheckingOut,
         checkoutSuccess: checkoutSuccess ?? this.checkoutSuccess
     );

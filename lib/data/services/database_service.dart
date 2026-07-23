@@ -1,6 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/order.dart';
+
 class DatabaseService {
   static Database? _database;
   static const String _dbName = 'pos_sample_app_db';
@@ -44,5 +46,16 @@ class DatabaseService {
         FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
       )
     ''');
+  }
+  Future<int> insertOrder(Order order) async {
+    final db = await database;
+    final orderId = await db.insert('orders', order.toMap());
+
+    for (final item in order.items) {
+      final itemWithOrder = item.copyWith(orderId: orderId);
+      await db.insert('order_items', itemWithOrder.toMap());
+    }
+
+    return orderId;
   }
 }

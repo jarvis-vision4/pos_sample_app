@@ -8,9 +8,7 @@ import '../cubit/cart_state.dart';
 
 class CustomerSection extends StatelessWidget {
   const CustomerSection({super.key, required this.state});
-
   final CartState state;
-
   @override
   Widget build(BuildContext context) {
     final selectedCustomer = state.selectedCustomer;

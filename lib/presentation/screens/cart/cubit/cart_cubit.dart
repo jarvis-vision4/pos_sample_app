@@ -8,7 +8,8 @@ import '../../../../locator/locator.dart';
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  final DatabaseService _databaseService=getIt.get<DatabaseService>();
+  final DatabaseService _databaseService = getIt.get<DatabaseService>();
+
   CartCubit() : super(const CartState());
 
   void addToCart(Product product) {
@@ -86,9 +87,14 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(selectedCustomer: customer));
   }
 
-  void checkout(Customer customer) {
+  void checkout(Customer customer) async{
     if (state.canCheckOut) {
-      emit(state.copyWith(isCheckingOut: true, checkoutSuccess: true,selectedCustomer: customer));
+      emit(
+        state.copyWith(
+          isCheckingOut: true,
+          selectedCustomer: customer,
+        ),
+      );
       final orderItems = state.items.map((cartItem) {
         return OrderItem(
           productId: cartItem.product.id,
@@ -105,7 +111,7 @@ class CartCubit extends Cubit<CartState> {
       final now = DateTime.now();
       final dateInt = now.year * 10000 + now.month * 100 + now.day;
       final order = Order(
-        orderNumber:dateInt,
+        orderNumber: dateInt,
         customerId: state.selectedCustomer!.id,
         customerName: state.selectedCustomer!.name,
         orderDate: DateTime.now(),
@@ -114,15 +120,14 @@ class CartCubit extends Cubit<CartState> {
         items: orderItems,
       );
       print(order.customerName);
+      await _databaseService.insertOrder(order);
     }
     emit(
-      state.copyWith(
-        isCheckingOut: false,
-        items: [],
-      ),
+      state.copyWith(isCheckingOut: false,checkoutSuccess: true, items: [],clearCustomer: true),
     );
   }
-  void resetCheckout(){
-    emit(state.copyWith(checkoutSuccess: false,selectedCustomer:null));
+
+  void resetCheckout() {
+    emit(state.copyWith(checkoutSuccess: false));
   }
 }
