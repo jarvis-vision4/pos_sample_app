@@ -7,7 +7,6 @@ import 'package:pos_sample_app/presentation/screens/cart/widgets/checkout_sectio
 import 'package:pos_sample_app/presentation/screens/cart/widgets/customer_section.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
 
-import '../../../data/models/customer.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -16,9 +15,8 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Cart & Checkout Screen"), actions: []),
-      body: BlocBuilder<CartCubit, CartState>(
+      body: BlocConsumer<CartCubit, CartState>(
         builder: (context, state) {
-          final selectedCustomer = state.selectedCustomer;
           return Column(
             children: [
               CustomerSection(state: state),
@@ -27,7 +25,22 @@ class CartScreen extends StatelessWidget {
             ],
           );
         },
+        listenWhen:  (prev, curr) => curr.checkoutSuccess != prev.checkoutSuccess,
+        listener: (context,state){
+          final checkoutSuccess = state.checkoutSuccess;
+          if (checkoutSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Order placed successfully!'),
+                backgroundColor: Colors.cyanAccent,
+              ),
+            );
+            context.read<CartCubit>().resetCheckout();
+            Navigator.pushReplacementNamed(context, AppRoutes.orders);
+          }
+        },
       ),
+
     );
   }
 }

@@ -12,7 +12,6 @@ class ApiService {
     try {
       print("Fetching products from API...");
       final response = await _dio.get('/products');
-      print(response.data);
       final List<dynamic> data = response.data;
       return data.map((product) => Product.fromJson(product)).toList();
     } catch (e) {
@@ -24,7 +23,7 @@ class ApiService {
       final response = await _dio.get('/products/categories');
       print(response.data);
       final List<dynamic> data = response.data;
-      return data.map((e) => e.toString()).toList();
+      return data.map((category) => category.toString()).toList();
     } catch (e) {
       throw Exception('Failed to load categories: $e');
     }

@@ -1,12 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:pos_sample_app/data/services/api_service.dart';
-import 'package:pos_sample_app/presentation/screens/customer_selection/cubit/customer_state.dart';
-
 import '../../../../data/models/customer.dart';
+import '../../../../data/services/api_service.dart';
+import '../../../../locator/locator.dart';
+import 'customer_state.dart';
 
 class CustomerCubit extends Cubit<CustomerState> {
-  final ApiService _apiService = GetIt.I.get<ApiService>();
+  final ApiService _apiService = getIt.get<ApiService>();
 
   CustomerCubit() : super(const CustomerState());
 

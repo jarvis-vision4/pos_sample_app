@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
+import 'package:pos_sample_app/routes/app_routes.dart';
+
+import '../cubit/cart_cubit.dart';
 
 class CheckoutSection extends StatelessWidget {
   const CheckoutSection({super.key, required this.state});
@@ -42,7 +46,7 @@ class CheckoutSection extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed:state.canCheckOut ?()=>_showCheckoutDialog(context):null,
+              onPressed:state.canCheckOut ? ()=>_showCheckoutDialog(context):null,
               child: state.isCheckingOut
                   ? const SizedBox(
                 height: 20,
@@ -57,6 +61,7 @@ class CheckoutSection extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 8,)
         ],
       ),
     );
@@ -74,6 +79,7 @@ class CheckoutSection extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
+              context.read<CartCubit>().checkout();
               Navigator.pop(ctx);
             },
             child: const Text('Confirm'),

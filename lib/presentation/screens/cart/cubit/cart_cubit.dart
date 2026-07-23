@@ -5,12 +5,12 @@ import '../../../../data/models/cart_item.dart';
 import '../../../../data/models/customer.dart';
 import '../../../../data/models/product.dart';
 
-class CartCubit extends Cubit<CartState>{
-  CartCubit(): super(const CartState());
+class CartCubit extends Cubit<CartState> {
+  CartCubit() : super(const CartState());
 
   void addToCart(Product product) {
     final existingIndex = state.items.indexWhere(
-          (item) => item.product.id == product.id,
+      (item) => item.product.id == product.id,
     );
 
     if (existingIndex >= 0) {
@@ -41,7 +41,7 @@ class CartCubit extends Cubit<CartState>{
 
   void increaseQuantity(int productId) {
     final existingIndex = state.items.indexWhere(
-          (item) => item.product.id == productId,
+      (item) => item.product.id == productId,
     );
     if (existingIndex >= 0) {
       final updatedCart = List<CartItem>.from(state.items);
@@ -55,7 +55,7 @@ class CartCubit extends Cubit<CartState>{
 
   void decreaseQuantity(int productId) {
     final existingIndex = state.items.indexWhere(
-          (item) => item.product.id == productId,
+      (item) => item.product.id == productId,
     );
     if (existingIndex >= 0) {
       final updatedCart = List<CartItem>.from(state.items);
@@ -71,15 +71,31 @@ class CartCubit extends Cubit<CartState>{
       }
     }
   }
+
   void removeItem(int productId) {
     final updatedItems = state.items
         .where((item) => item.product.id != productId)
         .toList();
     emit(state.copyWith(items: updatedItems));
   }
+
   void setCustomer(Customer customer) {
     emit(state.copyWith(selectedCustomer: customer));
   }
 
-
+  void checkout() {
+    if (state.canCheckOut) {
+      emit(state.copyWith(isCheckingOut: true, checkoutSuccess: true));
+    }
+    emit(
+      state.copyWith(
+        isCheckingOut: false,
+        selectedCustomer:null,
+        items: [],
+      ),
+    );
+  }
+  void resetCheckout(){
+    emit(state.copyWith(checkoutSuccess: false));
+  }
 }

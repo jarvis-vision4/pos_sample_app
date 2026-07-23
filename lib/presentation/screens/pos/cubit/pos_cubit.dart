@@ -1,13 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pos_sample_app/data/services/api_service.dart';
-
-import '../../../../data/models/cart_item.dart';
-import '../../../../data/models/product.dart';
+import '../../../../locator/locator.dart';
 import 'pos_state.dart';
 
 class PosCubit extends Cubit<PosState> {
-  final ApiService _apiService = GetIt.I.get<ApiService>();
+  final ApiService _apiService = getIt.get<ApiService>();
 
   PosCubit() : super(const PosState());
 

@@ -4,8 +4,8 @@ import 'package:pos_sample_app/constants/api_constants.dart';
 import 'package:pos_sample_app/data/services/api_service.dart';
 import 'package:pos_sample_app/data/services/database_service.dart';
 
+GetIt getIt = GetIt.I;
 Future<void> setUpLocator() async {
-  GetIt getIt = GetIt.I;
   Dio dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,
