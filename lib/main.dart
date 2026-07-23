@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/locator/locator.dart';
+import 'package:pos_sample_app/presentation/screens/order_list/cubit/order_list_cubit.dart';
 
 import 'package:pos_sample_app/routes/app_router.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
@@ -29,6 +30,9 @@ class MyPosApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CustomerCubit(),
+        ),
+        BlocProvider(
+          create: (context) => OrderListCubit(),
         ),
       ],
       child: MaterialApp(

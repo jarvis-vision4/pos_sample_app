@@ -7,6 +7,8 @@ class DatabaseService {
   static Database? _database;
   static const String _dbName = 'pos_sample_app_db';
   static const int _dbVersion = 1;
+  final String tableOrders='orders';
+  final String tableOrderItems='order_items';
   Future<Database> _initDatabase() async {
     final String path = join(await getDatabasesPath(), _dbName);
     return await openDatabase(
@@ -49,13 +51,29 @@ class DatabaseService {
   }
   Future<int> insertOrder(Order order) async {
     final db = await database;
-    final orderId = await db.insert('orders', order.toMap());
+    final orderId = await db.insert(tableOrders, order.toMap());
 
     for (final item in order.items) {
       final itemWithOrder = item.copyWith(orderId: orderId);
-      await db.insert('order_items', itemWithOrder.toMap());
+      await db.insert(tableOrderItems, itemWithOrder.toMap());
     }
 
     return orderId;
   }
+  Future<List<Order>> getAllOrders() async {
+    final db = await database;
+    final orderMaps = await db.query(tableOrders, orderBy: 'id DESC');
+    final List<Order> orders = [];
+    for (final orderMap in orderMaps) {
+      final itemMaps = await db.query(
+        tableOrderItems,
+        where: 'order_id = ?',
+        whereArgs: [orderMap['id']],
+      );
+      final items = itemMaps.map((m) => OrderItem.fromMap(m)).toList();
+      orders.add(Order.fromMap(orderMap, items: items));
+    }
+    return orders;
+  }
+
 }
