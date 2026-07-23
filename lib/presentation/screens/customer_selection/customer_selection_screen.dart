@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
 import 'package:pos_sample_app/presentation/screens/customer_selection/cubit/customer_cubit.dart';
 
 import 'cubit/customer_state.dart';
@@ -55,7 +56,6 @@ class _CustomerSelectionScreenState extends State<CustomerSelectionScreen> {
                       title: Text(customer.name),
                       subtitle: Text(customer.email),
                       onTap: (){
-                        context.read<CustomerCubit>().selectCustomer(customer);
                         Navigator.pop(context, customer);
                       },
                     );

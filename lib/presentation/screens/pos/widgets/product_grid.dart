@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
-
 import '../../cart/cubit/cart_cubit.dart';
 import '../cubit/pos_cubit.dart';
 import '../cubit/pos_state.dart';
@@ -48,10 +46,6 @@ class ProductGrid extends StatelessWidget {
       itemCount: state.filteredProducts.length,
       itemBuilder: (context, index) {
         final product = state.filteredProducts[index];
-        // final cartItem = state.cart
-        //     .where((item) => item.product.id == product.id)
-        //     .firstOrNull;
-        // final quantityInCart = cartItem?.quantity ?? 0;
         final cartState = context.watch<CartCubit>().state;
         final cartItem = cartState.items.where((item) => item.product.id == product.id)
             .firstOrNull;
@@ -68,7 +62,7 @@ class ProductGrid extends StatelessWidget {
                   color: Colors.white,
                   padding: const EdgeInsets.all(8),
                   child: CachedNetworkImage(
-                      imageUrl: product.image ?? "",
+                      imageUrl: product.image,
                       fit: BoxFit.contain,
                       errorWidget: (context, url,error) {
                         return const Center(
@@ -86,7 +80,7 @@ class ProductGrid extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        product.title ?? "",
+                        product.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -99,8 +93,7 @@ class ProductGrid extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            // Formatters.formatPrice(product.price),
-                            'Ks${product.price?.toStringAsFixed(2) ?? '0.00'}',
+                            'Ks${product.price.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -114,7 +107,7 @@ class ProductGrid extends StatelessWidget {
                                   children: [
                                     InkWell(
                                       onTap: (){
-                                        context.read<CartCubit>().decreaseQuantity(product.id!);
+                                        context.read<CartCubit>().decreaseQuantity(product.id);
                                       },
                                       child: const Icon(Icons.remove, size: 18),
                                     ),
@@ -130,7 +123,7 @@ class ProductGrid extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        context.read<CartCubit>().increaseQuantity(product.id!);
+                                        context.read<CartCubit>().increaseQuantity(product.id);
                                       },
                                       child: const Icon(Icons.add, size: 18),
                                     ),

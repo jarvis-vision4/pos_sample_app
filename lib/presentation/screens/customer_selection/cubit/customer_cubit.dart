@@ -33,7 +33,4 @@ class CustomerCubit extends Cubit<CustomerState> {
     }
   }
 
-  void selectCustomer(Customer customer) {
-    emit(state.copyWith(selectedCustomer: customer));
-  }
 }

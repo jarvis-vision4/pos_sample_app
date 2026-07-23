@@ -23,7 +23,7 @@ lib/
 │   └── api_constants.dart              # FakeStore API base URL & endpoint helpers
 ├── data/
 │   ├── models/
-│   │   ├── product.dart                # Product & Rating (JSON)
+│   │   ├── product.dart                # Product & Rating (non-nullable, JSON)
 │   │   ├── cart_item.dart              # CartItem (product + quantity + subtotal)
 │   │   ├── customer.dart               # Customer, Address & GeoLocation (JSON)
 │   │   └── order.dart                  # Order & OrderItem (SQLite maps)
@@ -31,7 +31,7 @@ lib/
 │       ├── api_service.dart            # REST API: products, categories, customers
 │       └── database_service.dart       # SQLite: orders + order_items tables
 ├── locator/
-│   └── locator.dart                    # GetIt: registers Dio, ApiService, DatabaseService
+│   └── locator.dart                    # Global GetIt: Dio, ApiService, DatabaseService
 ├── presentation/
 │   └── screens/
 │       ├── dashboard/
@@ -47,16 +47,17 @@ lib/
 │       │   ├── cubit/                  # CartCubit: CRUD, customer, checkout
 │       │   ├── widgets/
 │       │   │   ├── cart_items_list.dart
-│       │   │   └── checkout_section.dart
-│       │   └── cart_screen.dart        # Customer row, items, checkout
+│       │   │   ├── checkout_section.dart
+│       │   │   └── customer_section.dart
+│       │   └── cart_screen.dart        # BlocConsumer: cart + checkout flow
 │       ├── customer_selection/
-│       │   ├── cubit/                  # CustomerCubit: load + search
+│       │   ├── cubit/                  # CustomerCubit: load + search + select
 │       │   └── customer_selection_screen.dart
 │       └── order_list/
 │           ├── cubit/                  # OrderListCubit (stub)
-│           └── order_list_screen.dart  # Scaffold stub
+│           └── order_list_screen.dart  # Scaffold with back-to-dashboard
 └── routes/
-    ├── app_router.dart                 # Active: /, /pos, /cart, /customer-selection
+    ├── app_router.dart                 # All 5 routes active
     └── app_routes.dart
 ```
 
@@ -68,14 +69,14 @@ lib/
 | `/pos`               | PosScreen                 | Active |
 | `/cart`              | CartScreen                | Active |
 | `/customer-selection`| CustomerSelectionScreen   | Active |
-| `/orders`            | OrderListScreen           | Stub   |
+| `/orders`            | OrderListScreen           | Active |
 
 ## Cubits
 
 | Cubit            | Methods / State                                              |
 |------------------|--------------------------------------------------------------|
+| CartCubit        | `addToCart`, `increaseQuantity`, `decreaseQuantity`, `removeItem`, `setCustomer`, `checkout`, `resetCheckout` |
 | PosCubit         | `loadProducts`, `loadCategories`, `selectCategory`           |
-| CartCubit        | `addToCart`, `increaseQuantity`, `decreaseQuantity`, `removeItem`, `setCustomer` |
 | CustomerCubit    | `loadCustomers`, `searchCustomers`, `selectCustomer`         |
 | OrderListCubit   | Stub — no methods yet                                        |
 | DashboardCubit   | `loadDashboardData` (empty body)                             |
@@ -83,32 +84,32 @@ lib/
 ## Progress
 
 ### Completed
-- Project scaffolding and dependency setup
 - All data models: `Product`, `Rating`, `CartItem`, `Customer`, `Address`, `GeoLocation`, `Order`, `OrderItem`
 - `ApiService` — `getAllProducts`, `getCategories`, `getProductsByCategory`, `getAllCustomers`
 - `DatabaseService` — SQLite init with `orders` and `order_items` schema
-- `GetIt` locator with `Dio`, `ApiService`, `DatabaseService` singletons
-- `main.dart` — locator init, `MultiBlocProvider` (PosCubit, CartCubit, CustomerCubit), routing
+- `GetIt` locator — global `getIt` instance with `Dio`, `ApiService`, `DatabaseService` singletons
+- `main.dart` — locator init, `MultiBlocProvider` (no dead `child` params), `MaterialApp` + routing
 - `DashboardScreen` — two nav cards (POS, Orders)
 - `PosCubit` — product/category loading, category filtering with loading/error states
 - `PosScreen` — category chips, product grid, cart icon with quantity badge
 - `CategoryFilter` — horizontal `FilterChip` row ("All" + categories)
 - `ProductGrid` — 2-column grid, `CachedNetworkImage`, per-item add/increment/decrement
-- `CartCubit` — full cart CRUD: add, increase, decrease, remove, set customer
-- `CartState` — items, selectedCustomer, `totalQuantity`, `totalAmount`, `canCheckOut`, `isCheckingOut`
-- `CartScreen` — customer row (avatar/"Change" or "Select Customer"), items list
+- `CartCubit` — full cart CRUD + `checkout()` (creates Order + OrderItem) + `resetCheckout()`
+- `CartState` — items, selectedCustomer, `totalQuantity`, `totalAmount`, `canCheckOut`, `isCheckingOut`, `checkoutSuccess`
+- `CartScreen` — `BlocConsumer` with success snackbar + auto-navigate to `/orders` on checkout
+- `CustomerSection` — extracted widget (no duplicate code)
+- `CheckoutSection` — totals + checkout button with confirm dialog
 - `CartItemsList` — product image, price, subtotal, quantity +/- , delete with snackbar
-- `CheckoutSection` — total items, total amount, checkout button (disabled when `!canCheckOut`), confirm dialog
 - `CustomerCubit` — load customers, search by name/email, select customer
 - `CustomerSelectionScreen` — search `TextField` + filtered `ListView`, tap to select and pop back
-- `AppRouter` — all routes wired except `/orders`
+- `AppRouter` — all 5 routes wired and active
+- `Product` model — refactored to non-nullable `late` fields with `required` constructor
 
 ### In Progress
 - `DashboardCubit.loadDashboardData()` — stub (empty body)
 - `OrderListCubit` — scaffold created, no methods
-- `OrderListScreen` — scaffold created, empty body
+- `OrderListScreen` — scaffold with back navigation, empty body
 
 ### Not Started
-- Order checkout / submission flow (save to DB)
-- Order list data loading
+- Order list data loading (from SQLite)
 - Tests
