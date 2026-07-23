@@ -9,6 +9,7 @@ import 'package:pos_sample_app/routes/app_routes.dart';
 import 'presentation/screens/cart/cubit/cart_cubit.dart';
 import 'presentation/screens/customer_selection/cubit/customer_cubit.dart';
 import 'presentation/screens/pos/cubit/pos_cubit.dart';
+import 'theme/app_theme.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,9 +40,7 @@ class MyPosApp extends StatelessWidget {
         title: 'Flutter Demo',
         initialRoute: AppRoutes.dashboard,
         onGenerateRoute: AppRouter.onGenerateRoute,
-        theme: ThemeData(
-          colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-        ),
+        theme: AppTheme.lightTheme,
         debugShowCheckedModeBanner: false,
       ),
     );

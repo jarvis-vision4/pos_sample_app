@@ -29,7 +29,7 @@ lib/
 │   │   └── order.dart                  # Order & OrderItem (SQLite maps)
 │   └── services/
 │       ├── api_service.dart            # REST API: products, categories, customers
-│       └── database_service.dart       # SQLite: orders + order_items tables
+│       └── database_service.dart       # SQLite: insert + query orders/order_items
 ├── locator/
 │   └── locator.dart                    # Global GetIt: Dio, ApiService, DatabaseService
 ├── presentation/
@@ -44,18 +44,18 @@ lib/
 │       │   │   └── product_grid.dart
 │       │   └── pos_screen.dart         # POS terminal with cart badge
 │       ├── cart/
-│       │   ├── cubit/                  # CartCubit: CRUD, customer, checkout
+│       │   ├── cubit/                  # CartCubit: CRUD, checkout, SQLite persist
 │       │   ├── widgets/
 │       │   │   ├── cart_items_list.dart
 │       │   │   ├── checkout_section.dart
 │       │   │   └── customer_section.dart
 │       │   └── cart_screen.dart        # BlocConsumer: cart + checkout flow
 │       ├── customer_selection/
-│       │   ├── cubit/                  # CustomerCubit: load + search + select
+│       │   ├── cubit/                  # CustomerCubit: load + filter + select
 │       │   └── customer_selection_screen.dart
 │       └── order_list/
-│           ├── cubit/                  # OrderListCubit (stub)
-│           └── order_list_screen.dart  # Scaffold with back-to-dashboard
+│           ├── cubit/                  # OrderListCubit: loadOrders
+│           └── order_list_screen.dart  # Order cards list from SQLite
 └── routes/
     ├── app_router.dart                 # All 5 routes active
     └── app_routes.dart
@@ -75,41 +75,44 @@ lib/
 
 | Cubit            | Methods / State                                              |
 |------------------|--------------------------------------------------------------|
-| CartCubit        | `addToCart`, `increaseQuantity`, `decreaseQuantity`, `removeItem`, `setCustomer`, `checkout`, `resetCheckout` |
+| CartCubit        | `addToCart`, `increase/decreaseQuantity`, `removeItem`, `setCustomer`, `checkout` (async + SQLite insert), `resetCheckout` |
+| OrderListCubit   | `loadOrders` — fetches orders + items from SQLite            |
 | PosCubit         | `loadProducts`, `loadCategories`, `selectCategory`           |
-| CustomerCubit    | `loadCustomers`, `searchCustomers`, `selectCustomer`         |
-| OrderListCubit   | Stub — no methods yet                                        |
-| DashboardCubit   | `loadDashboardData` (empty body)                             |
+| CustomerCubit    | `loadCustomers`, `filterCustomers` (preserves original list), `selectCustomer` |
+| DashboardCubit   | `loadDashboardData` (stub)                                   |
+
+## Data Flow
+
+```
+POS Screen ──addToCart──▶ CartCubit ──checkout──▶ DatabaseService (SQLite insert)
+                                                        │
+Cart Screen ──selectCustomer──▶ CustomerSelectionScreen   │
+                                                        ▼
+Dashboard ──navigate──▶ OrderListScreen ◀──loadOrders───┘
+```
 
 ## Progress
 
 ### Completed
 - All data models: `Product`, `Rating`, `CartItem`, `Customer`, `Address`, `GeoLocation`, `Order`, `OrderItem`
-- `ApiService` — `getAllProducts`, `getCategories`, `getProductsByCategory`, `getAllCustomers`
-- `DatabaseService` — SQLite init with `orders` and `order_items` schema
-- `GetIt` locator — global `getIt` instance with `Dio`, `ApiService`, `DatabaseService` singletons
-- `main.dart` — locator init, `MultiBlocProvider` (no dead `child` params), `MaterialApp` + routing
+- `ApiService` — REST API: products, categories, customers
+- `DatabaseService` — SQLite schema, `insertOrder(order + items)`, `getAllOrders()`
+- `GetIt` locator — global `getIt` with `Dio`, `ApiService`, `DatabaseService`
+- `main.dart` — `MyPosApp`, `MultiBlocProvider` with all 4 cubits
 - `DashboardScreen` — two nav cards (POS, Orders)
-- `PosCubit` — product/category loading, category filtering with loading/error states
-- `PosScreen` — category chips, product grid, cart icon with quantity badge
-- `CategoryFilter` — horizontal `FilterChip` row ("All" + categories)
-- `ProductGrid` — 2-column grid, `CachedNetworkImage`, per-item add/increment/decrement
-- `CartCubit` — full cart CRUD + `checkout()` (creates Order + OrderItem) + `resetCheckout()`
-- `CartState` — items, selectedCustomer, `totalQuantity`, `totalAmount`, `canCheckOut`, `isCheckingOut`, `checkoutSuccess`
-- `CartScreen` — `BlocConsumer` with success snackbar + auto-navigate to `/orders` on checkout
-- `CustomerSection` — extracted widget (no duplicate code)
-- `CheckoutSection` — totals + checkout button with confirm dialog
-- `CartItemsList` — product image, price, subtotal, quantity +/- , delete with snackbar
-- `CustomerCubit` — load customers, search by name/email, select customer
-- `CustomerSelectionScreen` — search `TextField` + filtered `ListView`, tap to select and pop back
-- `AppRouter` — all 5 routes wired and active
-- `Product` model — refactored to non-nullable `late` fields with `required` constructor
+- `PosScreen` — category chips, product grid, cart badge
+- `CategoryFilter` — `FilterChip` row ("All" + categories)
+- `ProductGrid` — 2-column grid, `CachedNetworkImage`, add/increment/decrement
+- `CartCubit` — full CRUD + `checkout()` (creates Order, persists to SQLite, clears cart)
+- `CartScreen` — `BlocConsumer`, customer section, items list, checkout with confirm dialog
+- `CustomerCubit` — load from API, `filterCustomers` by name/email (preserves original list)
+- `CustomerSelectionScreen` — search field + filtered list, tap to select
+- `OrderListCubit` — `loadOrders()` with loading/error states
+- `OrderListScreen` — order cards with #id, status badge, customer, date, totals
+- `AppRouter` — all 5 routes active
 
 ### In Progress
 - `DashboardCubit.loadDashboardData()` — stub (empty body)
-- `OrderListCubit` — scaffold created, no methods
-- `OrderListScreen` — scaffold with back navigation, empty body
 
 ### Not Started
-- Order list data loading (from SQLite)
 - Tests

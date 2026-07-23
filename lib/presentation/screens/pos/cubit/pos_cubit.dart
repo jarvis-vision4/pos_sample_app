@@ -41,13 +41,11 @@ class PosCubit extends Cubit<PosState> {
       );
     } else {
       final filtered = state.products
-          .where((p) => p.category?.toLowerCase() == category.toLowerCase())
+          .where((p) => p.category.toLowerCase() == category.toLowerCase())
           .toList();
       emit(
         state.copyWith(filteredProducts: filtered, selectedCategory: category),
       );
     }
   }
-
-
 }

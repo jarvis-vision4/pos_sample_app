@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_cubit.dart';
-import 'package:pos_sample_app/presentation/screens/customer_selection/cubit/customer_cubit.dart';
 
+import 'cubit/customer_cubit.dart';
 import 'cubit/customer_state.dart';
 
 class CustomerSelectionScreen extends StatefulWidget {

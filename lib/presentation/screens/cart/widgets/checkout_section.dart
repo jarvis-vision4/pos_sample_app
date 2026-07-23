@@ -70,18 +70,18 @@ class CheckoutSection extends StatelessWidget {
   void _showCheckoutDialog(BuildContext context,Customer? customer) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (context) => AlertDialog(
         title: const Text('Confirm Checkout'),
         content: const Text('Are you sure you want to place this order?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               context.read<CartCubit>().checkout(customer!);
-              Navigator.pop(ctx);
+              Navigator.pop(context);
             },
             child: const Text('Confirm'),
           ),

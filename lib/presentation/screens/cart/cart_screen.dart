@@ -7,6 +7,8 @@ import 'package:pos_sample_app/presentation/screens/cart/widgets/checkout_sectio
 import 'package:pos_sample_app/presentation/screens/cart/widgets/customer_section.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
 
+import '../../../theme/app_theme.dart';
+
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -32,7 +34,7 @@ class CartScreen extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Order placed successfully!'),
-                backgroundColor: Colors.cyanAccent,
+                backgroundColor: AppTheme.successColor,
               ),
             );
             context.read<CartCubit>().resetCheckout();

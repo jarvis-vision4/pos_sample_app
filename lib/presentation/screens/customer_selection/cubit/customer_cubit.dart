@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../data/models/customer.dart';
 import '../../../../data/services/api_service.dart';
 import '../../../../locator/locator.dart';
 import 'customer_state.dart';

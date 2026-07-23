@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../routes/app_routes.dart';
+
 class CartBadge extends StatelessWidget {
   const CartBadge({super.key, required this.count});
   final int count;
@@ -36,6 +37,6 @@ class CartBadge extends StatelessWidget {
             ),
         ],
       ),
-    );;
+    );
   }
 }

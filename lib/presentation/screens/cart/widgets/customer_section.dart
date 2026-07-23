@@ -19,7 +19,7 @@ class CustomerSection extends StatelessWidget {
           CircleAvatar(
             backgroundColor: Colors.lightBlue,
             child: selectedCustomer == null
-                ? Icon(Icons.person_add, color: Colors.grey[400])
+                ? Icon(Icons.person, color: Colors.grey[400])
                 : Text(
                     state.selectedCustomer!.name.isNotEmpty
                         ? state.selectedCustomer!.name[0].toUpperCase()
