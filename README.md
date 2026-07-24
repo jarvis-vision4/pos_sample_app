@@ -1,4 +1,37 @@
 # POS Sample App
+## Getting Started
+
+### Prerequisites
+- Flutter SDK 3.44+ (stable channel)
+- Dart SDK ^3.12.2
+- Android Studio / Xcode (for emulator)
+
+### Setup
+
+```bash
+# Install dependencies
+flutter pub get
+
+# Run on connected device or emulator
+flutter run
+
+# Run in release mode
+flutter run --release
+
+# Build Android APK
+flutter build apk --release
+
+# Build Android App Bundle
+flutter build appbundle --release
+
+# Build iOS (macOS only)
+flutter build ios --release
+
+# Run tests
+flutter test
+```
+
+The app uses the [FakeStore API](https://fakestoreapi.com) as its data source — no backend setup required.
 
 A Point-of-Sale (POS) mobile application built with **Flutter** and **Dart**, following a layered architecture with Cubit state management.
 
@@ -134,36 +167,3 @@ POS ──addToCart──▶ CartCubit ──checkout──▶ DB.insertOrder() 
 ### Not Started
 - Tests
 
-## Getting Started
-
-### Prerequisites
-- Flutter SDK 3.44+ (stable channel)
-- Dart SDK ^3.12.2
-- Android Studio / Xcode (for emulator)
-
-### Setup
-
-```bash
-# Install dependencies
-flutter pub get
-
-# Run on connected device or emulator
-flutter run
-
-# Run in release mode
-flutter run --release
-
-# Build Android APK
-flutter build apk --release
-
-# Build Android App Bundle
-flutter build appbundle --release
-
-# Build iOS (macOS only)
-flutter build ios --release
-
-# Run tests
-flutter test
-```
-
-The app uses the [FakeStore API](https://fakestoreapi.com) as its data source — no backend setup required.
