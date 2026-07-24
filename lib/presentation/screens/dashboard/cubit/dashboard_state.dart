@@ -1,13 +1,23 @@
 class DashboardState {
+  final double totalSales;
+  final int totalCount;
   final bool isLoading;
 
   const DashboardState({
-    this.isLoading = true,
+    this.totalSales = 0.0,
+    this.totalCount=0,
+    this.isLoading = true
   });
 
-  DashboardState copyWith({bool? isLoading,}) {
+  DashboardState copyWith({
+    double? totalSales,
+    int? totalCount,
+    bool? isLoading
+  }) {
     return DashboardState(
-      isLoading: isLoading ?? this.isLoading,
+        totalSales: totalSales ?? this.totalSales,
+        totalCount: totalCount ?? this.totalCount,
+        isLoading: isLoading ?? this.isLoading
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/locator/locator.dart';
+import 'package:pos_sample_app/presentation/screens/dashboard/cubit/dashboard_cubit.dart';
 import 'package:pos_sample_app/presentation/screens/order_list/cubit/order_list_cubit.dart';
 
 import 'package:pos_sample_app/routes/app_router.dart';
@@ -23,6 +24,9 @@ class MyPosApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => DashboardCubit(),
+        ),
         BlocProvider(
             create: (context) => PosCubit(),
         ),

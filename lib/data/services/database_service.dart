@@ -75,5 +75,22 @@ class DatabaseService {
     }
     return orders;
   }
+  Future<double> getTotalSales() async {
+    final db = await database;
+    final result = await db.rawQuery(
+      'SELECT SUM(total_amount) as total_amount FROM $tableOrders',
+    );
+    print(result);
+    final total = result.first['total_amount'] as double;
+    print(total);
+    return total;
+  }
+  Future<int> getOrderCount() async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(*) as count FROM $tableOrders');
+    final total=result.first['count'] as int;
+    return total;
+  }
+
 
 }
