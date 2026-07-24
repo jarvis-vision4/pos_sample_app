@@ -80,7 +80,7 @@ class CheckoutSection extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<CartCubit>().checkout(customer!);
+              context.read<CartCubit>().checkout();
               Navigator.pop(context);
             },
             child: const Text('Confirm'),

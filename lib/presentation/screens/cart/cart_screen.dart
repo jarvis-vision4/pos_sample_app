@@ -16,7 +16,22 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Cart & Checkout Screen"), actions: []),
+      appBar: AppBar(title: const Text("Cart & Checkout Screen"), actions: [
+        BlocBuilder<CartCubit, CartState>(
+          builder: (context, state) {
+            if (state.items.isNotEmpty) {
+              return TextButton(
+                onPressed: () => _showClearCartDialog(context),
+                child: const Text(
+                  'Clear Cart',
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
+      ]),
       body: BlocConsumer<CartCubit, CartState>(
         builder: (context, state) {
           return Column(
@@ -43,6 +58,28 @@ class CartScreen extends StatelessWidget {
         },
       ),
 
+    );
+  }
+  void _showClearCartDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Cart'),
+        content: const Text('Are you sure you want to clear the cart?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<CartCubit>().clearCart();
+              Navigator.pop(context);
+            },
+            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }

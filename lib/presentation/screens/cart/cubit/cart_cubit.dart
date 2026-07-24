@@ -87,12 +87,12 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(selectedCustomer: customer));
   }
 
-  void checkout(Customer customer) async{
+  void checkout() async{
     if (state.canCheckOut) {
       emit(
         state.copyWith(
           isCheckingOut: true,
-          selectedCustomer: customer,
+          checkoutSuccess: false
         ),
       );
       final orderItems = state.items.map((cartItem) {
@@ -125,6 +125,9 @@ class CartCubit extends Cubit<CartState> {
     emit(
       state.copyWith(isCheckingOut: false,checkoutSuccess: true, items: [],clearCustomer: true),
     );
+  }
+  void clearCart() {
+    emit(state.copyWith(items: []));
   }
 
   void resetCheckout() {
