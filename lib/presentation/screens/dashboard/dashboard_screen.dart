@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:pos_sample_app/theme/app_theme.dart';
+import 'package:pos_sample_app/utils/price_format.dart';
 
 import '../../../routes/app_routes.dart';
 import 'cubit/dashboard_cubit.dart';
@@ -51,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                state.totalSales.toString(),
+                                PriceFormat.format(state.totalSales),
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,

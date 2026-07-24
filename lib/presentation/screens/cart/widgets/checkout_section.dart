@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/data/models/customer.dart';
 import 'package:pos_sample_app/presentation/screens/cart/cubit/cart_state.dart';
+import 'package:pos_sample_app/utils/price_format.dart';
 import '../cubit/cart_cubit.dart';
 
 class CheckoutSection extends StatelessWidget {
@@ -34,7 +35,7 @@ class CheckoutSection extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               Text(
-                "Ks ${state.totalAmount}",
+                PriceFormat.format(state.totalAmount),
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

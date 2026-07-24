@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos_sample_app/utils/price_format.dart';
 
 import '../../../../data/models/order.dart';
 
@@ -69,11 +70,11 @@ class OrderCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Items: ${order.totalQuantity}',
+                  "Items: ${order.totalQuantity}",
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 Text(
-                  order.totalAmount.toString(),
+                  PriceFormat.format(order.totalAmount),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
