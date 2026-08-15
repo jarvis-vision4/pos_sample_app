@@ -1,4 +1,3 @@
-import '../../../../data/models/cart_item.dart';
 import '../../../../data/models/product.dart';
 
 class PosState {
@@ -19,16 +18,19 @@ class PosState {
     this.isLoadingCategories = false,
     this.error,
   });
+
+  bool get isLoading => isLoadingProducts || isLoadingCategories;
+
   PosState copyWith({
     List<Product>? products,
     List<Product>? filteredProducts,
     List<String>? categories,
     String? selectedCategory,
     bool clearCategory = false,
-    List<CartItem>? cart,
     bool? isLoadingProducts,
     bool? isLoadingCategories,
     String? error,
+    bool clearError = false,
   }) {
     return PosState(
       products: products ?? this.products,
@@ -37,7 +39,7 @@ class PosState {
       selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
       isLoadingProducts: isLoadingProducts ?? this.isLoadingProducts,
       isLoadingCategories: isLoadingCategories ?? this.isLoadingCategories,
-      error: error ?? this.error,
+      error: clearError ? null : (error ?? this.error),
     );
   }
 }

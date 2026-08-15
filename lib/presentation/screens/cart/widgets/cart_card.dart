@@ -2,11 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_sample_app/data/models/cart_item.dart';
-
+import 'package:pos_sample_app/theme/app_theme.dart';
+import 'package:pos_sample_app/utils/price_format.dart';
 import '../cubit/cart_cubit.dart';
+
 class CartCard extends StatelessWidget {
-  const CartCard({super.key,required this.item});
+  const CartCard({super.key, required this.item});
+
   final CartItem item;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -27,10 +31,7 @@ class CartCard extends StatelessWidget {
                     width: 50,
                     height: 50,
                     color: Colors.grey[200],
-                    child: const Icon(
-                      Icons.image,
-                      color: Colors.grey,
-                    ),
+                    child: const Icon(Icons.image, color: Colors.grey),
                   );
                 },
               ),
@@ -44,28 +45,17 @@ class CartCard extends StatelessWidget {
                     item.product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    // '${Formatters.formatPrice(item.product.price)} x ${item.quantity}',
-                    'Ks${item.product.price.toStringAsFixed(2)} x ${item.quantity}',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12,
-                    ),
+                    '${PriceFormat.format(item.product.price.toDouble())} x ${item.quantity}',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    // 'Subtotal: ${Formatters.formatPrice(item.subtotal)}',
-                    'Subtotal: Ks${item.subtotal.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0984E3),
-                    ),
+                    'Subtotal: ${PriceFormat.format(item.subtotal.toDouble())}',
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.accentColor),
                   ),
                 ],
               ),
@@ -74,21 +64,12 @@ class CartCard extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    context.read<CartCubit>().removeItem(
-                      item.product.id,
-                    );
+                    context.read<CartCubit>().removeFromCart(item.product.id);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Item removed from cart"),
-                        duration: const Duration(seconds: 2),
-                      ),
+                      const SnackBar(content: Text('Item removed from cart'), duration: Duration(seconds: 2)),
                     );
                   },
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    color: Colors.red,
-                    size: 20,
-                  ),
+                  icon: const Icon(Icons.delete_outline, color: AppTheme.errorColor, size: 20),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
@@ -97,40 +78,18 @@ class CartCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: () {
-                        context.read<CartCubit>().decreaseQuantity(
-                          item.product.id,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.remove_circle_outline,
-                        size: 22,
-                      ),
+                      onPressed: () => context.read<CartCubit>().decreaseQuantity(item.product.id),
+                      icon: const Icon(Icons.remove_circle_outline, size: 22),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: Text(
-                        '${item.quantity}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     IconButton(
-                      onPressed: () {
-                        context.read<CartCubit>().increaseQuantity(
-                          item.product.id,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.add_circle_outline,
-                        size: 22,
-                        color: Color(0xFF00B894),
-                      ),
+                      onPressed: () => context.read<CartCubit>().increaseQuantity(item.product.id),
+                      icon: const Icon(Icons.add_circle_outline, size: 22, color: AppTheme.successColor),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),

@@ -1,55 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../data/models/customer.dart';
-import '../../../../routes/app_routes.dart';
+import 'package:pos_sample_app/data/models/customer.dart';
+import 'package:pos_sample_app/routes/app_routes.dart';
+import 'package:pos_sample_app/theme/app_theme.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 
 class CustomerSection extends StatelessWidget {
   const CustomerSection({super.key, required this.state});
+
   final CartState state;
+
   @override
   Widget build(BuildContext context) {
-    final selectedCustomer = state.selectedCustomer;
+    final customer = state.selectedCustomer;
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.lightBlue,
-            child: selectedCustomer == null
-                ? Icon(Icons.person, color: Colors.grey[400])
+            backgroundColor: AppTheme.accentColor,
+            child: customer == null
+                ? Icon(Icons.person_add, color: Colors.grey[400])
                 : Text(
-                    state.selectedCustomer!.name.isNotEmpty
-                        ? state.selectedCustomer!.name[0].toUpperCase()
-                        : '?',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    customer.name.isNotEmpty ? customer.name[0].toUpperCase() : '?',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              selectedCustomer?.name ?? "Select Customer",
-              style: TextStyle(color: Colors.grey),
+              customer?.name ?? 'Select Customer',
+              style: const TextStyle(color: AppTheme.textSecondary),
             ),
           ),
           ElevatedButton(
             onPressed: () async {
-              final customer = await Navigator.pushNamed(
-                context,
-                AppRoutes.customerSelection,
-              );
-              if (customer is Customer && context.mounted) {
-                context.read<CartCubit>().setCustomer(customer);
+              final result = await Navigator.pushNamed(context, AppRoutes.customerSelection);
+              if (result is Customer && context.mounted) {
+                context.read<CartCubit>().setCustomer(result);
               }
             },
-            child: Text(
-              selectedCustomer == null ? 'Select Customer' : 'Change',
-            ),
+            child: Text(customer == null ? 'Select Customer' : 'Change'),
           ),
         ],
       ),

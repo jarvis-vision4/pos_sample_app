@@ -1,27 +1,24 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../models/order.dart';
 
 class DatabaseService {
   static Database? _database;
   static const String _dbName = 'pos_sample_app_db';
   static const int _dbVersion = 1;
-  final String tableOrders='orders';
-  final String tableOrderItems='order_items';
-  Future<Database> _initDatabase() async {
-    final String path = join(await getDatabasesPath(), _dbName);
-    return await openDatabase(
-      path,
-      version: _dbVersion,
-      onCreate: _onCreate,
-    );
-  }
+
+  final String tableOrders = 'orders';
+  final String tableOrderItems = 'order_items';
+
   Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
-    return _database!;
+    return _database ??= await _initDatabase();
   }
+
+  Future<Database> _initDatabase() async {
+    final path = join(await getDatabasesPath(), _dbName);
+    return openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+  }
+
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE orders (
@@ -49,21 +46,23 @@ class DatabaseService {
       )
     ''');
   }
+
   Future<int> insertOrder(Order order) async {
     final db = await database;
     final orderId = await db.insert(tableOrders, order.toMap());
 
     for (final item in order.items) {
-      final itemWithOrder = item.copyWith(orderId: orderId);
-      await db.insert(tableOrderItems, itemWithOrder.toMap());
+      await db.insert(tableOrderItems, item.copyWith(orderId: orderId).toMap());
     }
 
     return orderId;
   }
+
   Future<List<Order>> getAllOrders() async {
     final db = await database;
     final orderMaps = await db.query(tableOrders, orderBy: 'id DESC');
-    final List<Order> orders = [];
+    final orders = <Order>[];
+
     for (final orderMap in orderMaps) {
       final itemMaps = await db.query(
         tableOrderItems,
@@ -73,24 +72,19 @@ class DatabaseService {
       final items = itemMaps.map((m) => OrderItem.fromMap(m)).toList();
       orders.add(Order.fromMap(orderMap, items: items));
     }
+
     return orders;
   }
+
   Future<double> getTotalSales() async {
     final db = await database;
-    final result = await db.rawQuery(
-      'SELECT SUM(total_amount) as total_amount FROM $tableOrders',
-    );
-    print(result);
-    final total = result.first['total_amount'] as double;
-    print(total);
-    return total;
+    final result = await db.rawQuery('SELECT SUM(total_amount) as total FROM $tableOrders');
+    return (result.first['total'] as num?)?.toDouble() ?? 0.0;
   }
+
   Future<int> getOrderCount() async {
     final db = await database;
     final result = await db.rawQuery('SELECT COUNT(*) as count FROM $tableOrders');
-    final total=result.first['count'] as int;
-    return total;
+    return (result.first['count'] as int?) ?? 0;
   }
-
-
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:pos_sample_app/routes/app_routes.dart';
 import 'cubit/order_list_cubit.dart';
 import 'cubit/order_list_state.dart';
@@ -8,6 +7,7 @@ import 'widgets/order_card.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
+
   @override
   State<OrderListScreen> createState() => _OrderListScreenState();
 }
@@ -15,11 +15,12 @@ class OrderListScreen extends StatefulWidget {
 class _OrderListScreenState extends State<OrderListScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<OrderListCubit>().loadOrders();
     });
-    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,20 +35,21 @@ class _OrderListScreenState extends State<OrderListScreen> {
           ),
         ),
       ),
-      body: BlocBuilder<OrderListCubit,OrderListState>(builder: (context,state){
-        final orders=state.orders;
-        if(state.isLoading){
-          return const Center(child: CircularProgressIndicator());
-        }
-        return ListView.builder(
-            padding: EdgeInsets.all(16),
-            itemCount: orders.length,
-            itemBuilder: (context,index){
-              final order=orders[index];
-              return OrderCard(order: order);
-            }
-        );
-      })
+      body: BlocBuilder<OrderListCubit, OrderListState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.orders.isEmpty) {
+            return const Center(child: Text('No orders yet'));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: state.orders.length,
+            itemBuilder: (context, index) => OrderCard(order: state.orders[index]),
+          );
+        },
+      ),
     );
   }
 }

@@ -13,121 +13,82 @@ class CartCubit extends Cubit<CartState> {
   CartCubit() : super(const CartState());
 
   void addToCart(Product product) {
-    final existingIndex = state.items.indexWhere(
-      (item) => item.product.id == product.id,
-    );
+    final existingIndex = state.items.indexWhere((item) => item.product.id == product.id);
 
     if (existingIndex >= 0) {
-      final updatedCart = List<CartItem>.of(state.items);
-      final cartItem = updatedCart[existingIndex];
-      updatedCart[existingIndex] = cartItem.copyWith(
-        quantity: cartItem.quantity + 1,
+      final updated = List<CartItem>.from(state.items);
+      updated[existingIndex] = updated[existingIndex].copyWith(
+        quantity: updated[existingIndex].quantity + 1,
       );
-      emit(state.copyWith(items: updatedCart));
+      emit(state.copyWith(items: updated));
     } else {
-      emit(
-        state.copyWith(
-          items: [
-            ...state.items,
-            CartItem(product: product),
-          ],
-        ),
-      );
+      emit(state.copyWith(items: [...state.items, CartItem(product: product)]));
     }
   }
 
   void removeFromCart(int productId) {
-    final updatedCart = state.items
-        .where((item) => item.product.id != productId)
-        .toList();
-    emit(state.copyWith(items: updatedCart));
+    emit(state.copyWith(items: state.items.where((item) => item.product.id != productId).toList()));
   }
 
   void increaseQuantity(int productId) {
-    final existingIndex = state.items.indexWhere(
-      (item) => item.product.id == productId,
-    );
-    if (existingIndex >= 0) {
-      final updatedCart = List<CartItem>.from(state.items);
-      final cartItem = updatedCart[existingIndex];
-      updatedCart[existingIndex] = cartItem.copyWith(
-        quantity: cartItem.quantity + 1,
-      );
-      emit(state.copyWith(items: updatedCart));
-    }
+    final index = state.items.indexWhere((item) => item.product.id == productId);
+    if (index < 0) return;
+
+    final updated = List<CartItem>.from(state.items);
+    updated[index] = updated[index].copyWith(quantity: updated[index].quantity + 1);
+    emit(state.copyWith(items: updated));
   }
 
   void decreaseQuantity(int productId) {
-    final existingIndex = state.items.indexWhere(
-      (item) => item.product.id == productId,
-    );
-    if (existingIndex >= 0) {
-      final updatedCart = List<CartItem>.from(state.items);
-      final cartItem = updatedCart[existingIndex];
-      final currentQty = cartItem.quantity;
-      if (currentQty > 1) {
-        updatedCart[existingIndex] = cartItem.copyWith(
-          quantity: currentQty - 1,
-        );
-        emit(state.copyWith(items: updatedCart));
-      } else {
-        removeFromCart(productId);
-      }
-    }
-  }
+    final index = state.items.indexWhere((item) => item.product.id == productId);
+    if (index < 0) return;
 
-  void removeItem(int productId) {
-    final updatedItems = state.items
-        .where((item) => item.product.id != productId)
-        .toList();
-    emit(state.copyWith(items: updatedItems));
+    final currentQty = state.items[index].quantity;
+    if (currentQty > 1) {
+      final updated = List<CartItem>.from(state.items);
+      updated[index] = updated[index].copyWith(quantity: currentQty - 1);
+      emit(state.copyWith(items: updated));
+    } else {
+      removeFromCart(productId);
+    }
   }
 
   void setCustomer(Customer customer) {
     emit(state.copyWith(selectedCustomer: customer));
   }
 
-  void checkout() async{
-    if (state.canCheckOut) {
-      emit(
-        state.copyWith(
-          isCheckingOut: true,
-          checkoutSuccess: false
-        ),
-      );
-      final orderItems = state.items.map((cartItem) {
-        return OrderItem(
-          productId: cartItem.product.id,
-          productName: cartItem.product.title,
-          productImage: cartItem.product.image,
-          unitPrice: cartItem.product.price.toDouble(),
-          quantity: cartItem.quantity,
-          subtotal: cartItem.subtotal.toDouble(),
-        );
-      }).toList();
-      for (var item in orderItems) {
-        print(item.productName);
-      }
-      final now = DateTime.now();
-      final dateInt = now.year * 10000 + now.month * 100 + now.day;
-      final order = Order(
-        orderNumber: dateInt,
-        customerId: state.selectedCustomer!.id,
-        customerName: state.selectedCustomer!.name,
-        orderDate: DateTime.now(),
-        totalQuantity: state.totalQuantity,
-        totalAmount: state.totalAmount,
-        items: orderItems,
-      );
-      print(order.customerName);
-      await _databaseService.insertOrder(order);
-    }
-    emit(
-      state.copyWith(isCheckingOut: false,checkoutSuccess: true, items: [],clearCustomer: true),
-    );
-  }
   void clearCart() {
-    emit(state.copyWith(items: []));
+    emit(state.copyWith(items: [], clearCustomer: true));
+  }
+
+  Future<void> checkout() async {
+    if (!state.canCheckOut) return;
+
+    emit(state.copyWith(isCheckingOut: true));
+
+    final orderItems = state.items.map((item) => OrderItem(
+      productId: item.product.id,
+      productName: item.product.title,
+      productImage: item.product.image,
+      unitPrice: item.product.price.toDouble(),
+      quantity: item.quantity,
+      subtotal: item.subtotal.toDouble(),
+    )).toList();
+
+    final now = DateTime.now();
+    final order = Order(
+      orderNumber: now.year * 10000 + now.month * 100 + now.day,
+      customerId: state.selectedCustomer!.id,
+      customerName: state.selectedCustomer!.name,
+      orderDate: now,
+      totalQuantity: state.totalQuantity,
+      totalAmount: state.totalAmount,
+      items: orderItems,
+    );
+
+    await _databaseService.insertOrder(order);
+
+    emit(state.copyWith(isCheckingOut: false, checkoutSuccess: true, items: [], clearCustomer: true));
   }
 
   void resetCheckout() {

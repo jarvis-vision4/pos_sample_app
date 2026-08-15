@@ -1,12 +1,13 @@
 class Product {
-  late int id;
-  late String title;
-  late num price;
-  late String description;
-  late String category;
-  late String image;
-  Rating? rating;
-  Product({
+  final int id;
+  final String title;
+  final num price;
+  final String description;
+  final String category;
+  final String image;
+  final Rating? rating;
+
+  const Product({
     required this.id,
     required this.title,
     required this.price,
@@ -16,14 +17,16 @@ class Product {
     this.rating,
   });
 
-  Product.fromJson(Map<String,dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    price = json['price'];
-    description = json['description'];
-    category = json['category'];
-    image = json['image'];
-    rating = json['rating'] != null ? Rating.fromJson(json['rating']) : null;
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      price: json['price'] as num,
+      description: json['description'] as String,
+      category: json['category'] as String,
+      image: json['image'] as String,
+      rating: json['rating'] != null ? Rating.fromJson(json['rating'] as Map<String, dynamic>) : null,
+    );
   }
 
   Product copyWith({
@@ -34,49 +37,55 @@ class Product {
     String? category,
     String? image,
     Rating? rating,
-  }) => Product(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    price: price ?? this.price,
-    description: description ?? this.description,
-    category: category ?? this.category,
-    image: image ?? this.image,
-    rating: rating ?? this.rating,
-  );
+  }) {
+    return Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      price: price ?? this.price,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      image: image ?? this.image,
+      rating: rating ?? this.rating,
+    );
+  }
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = id;
-    map['title'] = title;
-    map['price'] = price;
-    map['description'] = description;
-    map['category'] = category;
-    map['image'] = image;
-    if (rating != null) {
-      map['rating'] = rating?.toJson();
-    }
-    return map;
+    return {
+      'id': id,
+      'title': title,
+      'price': price,
+      'description': description,
+      'category': category,
+      'image': image,
+      'rating': rating?.toJson(),
+    };
   }
 }
 
 class Rating {
-  Rating({this.rate, this.count});
+  final num rate;
+  final num count;
 
-  Rating.fromJson(dynamic json) {
-    rate = json['rate'];
-    count = json['count'];
+  const Rating({required this.rate, required this.count});
+
+  factory Rating.fromJson(Map<String, dynamic> json) {
+    return Rating(
+      rate: json['rate'] as num,
+      count: json['count'] as num,
+    );
   }
 
-  num? rate;
-  num? count;
-
-  Rating copyWith({num? rate, num? count}) =>
-      Rating(rate: rate ?? this.rate, count: count ?? this.count);
+  Rating copyWith({num? rate, num? count}) {
+    return Rating(
+      rate: rate ?? this.rate,
+      count: count ?? this.count,
+    );
+  }
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['rate'] = rate;
-    map['count'] = count;
-    return map;
+    return {
+      'rate': rate,
+      'count': count,
+    };
   }
 }

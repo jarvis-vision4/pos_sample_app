@@ -5,45 +5,28 @@ import '../models/product.dart';
 
 class ApiService {
   final Dio _dio = getIt.get<Dio>();
+
   Future<List<Product>> getAllProducts() async {
-    try {
-      print("Fetching products from API...");
-      final response = await _dio.get('/products');
-      final List<dynamic> data = response.data;
-      return data.map((product) => Product.fromJson(product)).toList();
-    } catch (e) {
-      throw Exception('Failed to load products: $e');
-    }
+    final response = await _dio.get('/products');
+    final data = response.data as List<dynamic>;
+    return data.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<List<String>> getCategories() async {
-    try {
-      final response = await _dio.get('/products/categories');
-      print(response.data);
-      final List<dynamic> data = response.data;
-      return data.map((category) => category.toString()).toList();
-    } catch (e) {
-      throw Exception('Failed to load categories: $e');
-    }
+    final response = await _dio.get('/products/categories');
+    final data = response.data as List<dynamic>;
+    return data.map((e) => e.toString()).toList();
   }
 
   Future<List<Product>> getProductsByCategory(String category) async {
-    try {
-      final response = await _dio.get('/products/category/$category');
-      final List<dynamic> data = response.data;
-      return data.map((product) => Product.fromJson(product)).toList();
-    } catch (e) {
-      throw Exception('Failed to load products by category: $e');
-    }
+    final response = await _dio.get('/products/category/$category');
+    final data = response.data as List<dynamic>;
+    return data.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<List<Customer>> getAllCustomers() async {
-    try {
-      final response = await _dio.get('/users');
-      final List<dynamic> data = response.data;
-      return data.map((customer) => Customer.fromJson(customer)).toList();
-    } catch (e) {
-      throw Exception('Failed to load customers: $e');
-    }
+    final response = await _dio.get('/users');
+    final data = response.data as List<dynamic>;
+    return data.map((e) => Customer.fromJson(e as Map<String, dynamic>)).toList();
   }
 }

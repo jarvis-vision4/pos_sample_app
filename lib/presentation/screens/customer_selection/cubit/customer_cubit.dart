@@ -12,7 +12,11 @@ class CustomerCubit extends Cubit<CustomerState> {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       final customers = await _apiService.getAllCustomers();
-      emit(state.copyWith(filteredCustomers: customers,customers: customers, isLoading: false));
+      emit(state.copyWith(
+        customers: customers,
+        filteredCustomers: customers,
+        isLoading: false,
+      ));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
@@ -23,11 +27,9 @@ class CustomerCubit extends Cubit<CustomerState> {
       emit(state.copyWith(filteredCustomers: state.customers, searchQuery: ''));
     } else {
       final filtered = state.customers
-          .where(
-            (c) =>
-                c.name.toLowerCase().contains(query.toLowerCase()) ||
-                c.email.toLowerCase().contains(query.toLowerCase()),
-          )
+          .where((c) =>
+              c.name.toLowerCase().contains(query.toLowerCase()) ||
+              c.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
       emit(state.copyWith(filteredCustomers: filtered, searchQuery: query));
     }

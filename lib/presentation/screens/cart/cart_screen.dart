@@ -6,9 +6,7 @@ import 'package:pos_sample_app/presentation/screens/cart/widgets/cart_items_list
 import 'package:pos_sample_app/presentation/screens/cart/widgets/checkout_section.dart';
 import 'package:pos_sample_app/presentation/screens/cart/widgets/customer_section.dart';
 import 'package:pos_sample_app/routes/app_routes.dart';
-
-import '../../../theme/app_theme.dart';
-
+import 'package:pos_sample_app/theme/app_theme.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -16,67 +14,61 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Cart & Checkout Screen"), actions: [
-        BlocBuilder<CartCubit, CartState>(
-          builder: (context, state) {
-            if (state.items.isNotEmpty) {
+      appBar: AppBar(
+        title: const Text('Cart & Checkout'),
+        actions: [
+          BlocBuilder<CartCubit, CartState>(
+            buildWhen: (prev, curr) => prev.items.isNotEmpty != curr.items.isNotEmpty,
+            builder: (context, state) {
+              if (state.items.isEmpty) return const SizedBox.shrink();
               return TextButton(
                 onPressed: () => _showClearCartDialog(context),
-                child: const Text(
-                  'Clear Cart',
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: const Text('Clear Cart', style: TextStyle(color: Colors.white)),
               );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-      ]),
+            },
+          ),
+        ],
+      ),
       body: BlocConsumer<CartCubit, CartState>(
+        listenWhen: (prev, curr) => curr.checkoutSuccess != prev.checkoutSuccess,
+        listener: (context, state) {
+          if (!state.checkoutSuccess) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Order placed successfully!'),
+              backgroundColor: AppTheme.successColor,
+            ),
+          );
+          context.read<CartCubit>().resetCheckout();
+          Navigator.pushReplacementNamed(context, AppRoutes.orders);
+        },
         builder: (context, state) {
           return Column(
             children: [
               CustomerSection(state: state),
-              Expanded(child: CartItemsList(state:state)),
-              CheckoutSection(state: state)
+              Expanded(child: CartItemsList(state: state)),
+              CheckoutSection(state: state),
             ],
           );
         },
-        listenWhen:  (prev, curr) => curr.checkoutSuccess != prev.checkoutSuccess,
-        listener: (context,state){
-          final checkoutSuccess = state.checkoutSuccess;
-          if (checkoutSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Order placed successfully!'),
-                backgroundColor: AppTheme.successColor,
-              ),
-            );
-            context.read<CartCubit>().resetCheckout();
-            Navigator.pushReplacementNamed(context, AppRoutes.orders);
-          }
-        },
       ),
-
     );
   }
+
   void _showClearCartDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         title: const Text('Clear Cart'),
         content: const Text('Are you sure you want to clear the cart?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               context.read<CartCubit>().clearCart();
-              Navigator.pop(context);
+              Navigator.pop(ctx);
             },
-            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+            child: const Text('Clear', style: TextStyle(color: AppTheme.errorColor)),
           ),
         ],
       ),
