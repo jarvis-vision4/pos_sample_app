@@ -1,0 +1,163 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #2D3436
+  FontName Helvetica
+  FontSize 12
+  AttributeFontSize 11
+  MethodFontSize 11
+  ArrowColor #636E72
+}
+skinparam stereotype {
+  FontSize 10
+  FontColor #636E72
+}
+hide circle
+left to right direction
+
+package "Models" {
+  class Product <<model>> {
+    - int id
+    - String title
+    - num price
+    - String description
+    - String category
+    - String image
+    - Rating? rating
+    + fromJson(Map): Product
+    + toJson(): Map
+    + copyWith(): Product
+  }
+  class Rating {
+    - num rate
+    - num count
+    + fromJson(Map): Rating
+    + toJson(): Map
+    + copyWith(): Rating
+  }
+  class CartItem {
+    - Product product
+    - int quantity
+    + get subtotal(): num
+    + copyWith(): CartItem
+  }
+  class Customer <<model>> {
+    - int id
+    - String email
+    - String username
+    - String name
+    - String phone
+    - Address? address
+    + fromJson(Map): Customer
+    + toJson(): Map
+  }
+  class Address {
+    - String city
+    - String street
+    - int number
+    - String zipcode
+    - GeoLocation? geolocation
+    + fromJson(Map): Address
+  }
+  class GeoLocation {
+    - String lat
+    - String long
+    + fromJson(Map): GeoLocation
+  }
+  class Order <<model>> {
+    - int? id
+    - int orderNumber
+    - int customerId
+    - String customerName
+    - DateTime orderDate
+    - int totalQuantity
+    - double totalAmount
+    - List<OrderItem> items
+    + toMap(): Map
+    + fromMap(Map): Order
+    + copyWith(): Order
+  }
+  class OrderItem {
+    - int? id
+    - int? orderId
+    - int productId
+    - String productName
+    - String productImage
+    - double unitPrice
+    - int quantity
+    - double subtotal
+    + toMap(): Map
+    + fromMap(Map): OrderItem
+    + copyWith(): OrderItem
+  }
+}
+
+package "Services" {
+  class ApiService <<service>> {
+    - Dio _dio
+    + getAllProducts(): Future<List<Product>>
+    + getCategories(): Future<List<String>>
+    + getProductsByCategory(c): Future<List<Product>>
+    + getAllCustomers(): Future<List<Customer>>
+  }
+  class DatabaseService <<service>> {
+    - Database? _database
+    - String tableOrders
+    - String tableOrderItems
+    + insertOrder(Order): Future<int>
+    + getAllOrders(): Future<List<Order>>
+    + getTotalSales(): Future<double>
+    + getOrderCount(): Future<int>
+  }
+}
+
+package "State (BLoC / Cubit)" {
+  abstract class Cubit<T>
+  class PosCubit
+  class CartCubit
+  class DashboardCubit
+  class CustomerCubit
+  class OrderListCubit
+  class PosState
+  class CartState
+  class DashboardState
+  class CustomerState
+  class OrderListState
+}
+
+' --- Relationships among models ---
+Product *-- Rating : contains
+CartItem --> Product : contains
+Customer *-- Address : has
+Address *-- GeoLocation : has
+Order *-- OrderItem : 1..*
+OrderItem --> Product : references
+
+' --- Cubit inheritance ---
+Cubit <|-- PosCubit
+Cubit <|-- CartCubit
+Cubit <|-- DashboardCubit
+Cubit <|-- CustomerCubit
+Cubit <|-- OrderListCubit
+
+' --- Cubit produces State (dependency) ---
+PosCubit ..> PosState
+CartCubit ..> CartState
+DashboardCubit ..> DashboardState
+CustomerCubit ..> CustomerState
+OrderListCubit ..> OrderListState
+
+' --- Cubit uses Services ---
+PosCubit ..> ApiService
+CustomerCubit ..> ApiService
+CartCubit ..> DatabaseService
+DashboardCubit ..> DatabaseService
+OrderListCubit ..> DatabaseService
+
+' --- Services return Models ---
+ApiService ..> Product
+ApiService ..> Customer
+DatabaseService ..> Order
+DatabaseService ..> OrderItem
+@enduml

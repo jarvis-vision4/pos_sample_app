@@ -169,7 +169,7 @@ def save(image: Image.Image, filename: str) -> None:
 def architecture_diagram() -> None:
     image, draw = new_canvas(
         2800,
-        1850,
+        1900,
         "Project Architecture Diagram",
         "POS Sample App mobile architecture - Flutter, Cubit state, FakeStore API, and local SQLite storage",
     )
@@ -177,8 +177,8 @@ def architecture_diagram() -> None:
     draw_group(draw, (85, 190, 2715, 430), "Client and Application Shell", "#eef5ff")
     draw_group(draw, (85, 490, 2715, 795), "Presentation Layer", "#eefbf3")
     draw_group(draw, (85, 855, 2715, 1125), "State Management Layer", "#fff8ea")
-    draw_group(draw, (85, 1185, 2715, 1455), "Data and Service Layer", "#f4efff")
-    draw_group(draw, (85, 1515, 2715, 1765), "External and Device Storage", "#fff0ef")
+    draw_group(draw, (85, 1185, 2715, 1475), "Data and Service Layer", "#f4efff")
+    draw_group(draw, (85, 1515, 2715, 1810), "External and Device Storage", "#fff0ef")
 
     user = Box(165, 260, 350, 115, "Mobile User", ["Runs Android or iOS app", "Uses POS, cart, orders"], BLUE, BLUE_DARK)
     app = Box(655, 245, 520, 145, "Flutter App Shell", ["main.dart initializes Flutter", "MyPosApp + MaterialApp", "AppTheme.lightTheme"], WHITE, BLUE_DARK)
@@ -201,13 +201,13 @@ def architecture_diagram() -> None:
         Box(2150, 930, 420, 130, "OrderListCubit", ["loadOrders", "OrderListState"], ORANGE, ORANGE_DARK),
     ]
 
-    api = Box(465, 1260, 500, 130, "ApiService", ["Dio REST calls", "Products, categories, users"], PURPLE, PURPLE_DARK)
-    db = Box(1190, 1260, 500, 130, "DatabaseService", ["sqflite database", "Insert/read orders", "Dashboard aggregates"], PURPLE, PURPLE_DARK)
-    models = Box(1915, 1260, 500, 130, "Models and Utilities", ["Product, Customer, CartItem", "Order, OrderItem, PriceFormat"], PURPLE, PURPLE_DARK)
+    api = Box(465, 1260, 500, 155, "ApiService", ["Dio REST calls", "Products, categories, users"], PURPLE, PURPLE_DARK)
+    db = Box(1190, 1260, 500, 155, "DatabaseService", ["sqflite database", "Insert/read orders", "Dashboard aggregates"], PURPLE, PURPLE_DARK)
+    models = Box(1915, 1260, 500, 155, "Models and Utilities", ["Product, Customer, CartItem", "Order, OrderItem, PriceFormat"], PURPLE, PURPLE_DARK)
 
-    fake = Box(465, 1595, 500, 105, "FakeStore API", ["External REST data source", "/products, /users"], RED, RED_DARK)
-    sqlite = Box(1190, 1595, 500, 105, "Local SQLite DB", ["orders table", "order_items table"], RED, RED_DARK)
-    device = Box(1915, 1595, 500, 105, "Device Runtime", ["Android / iOS", "Local app sandbox"], RED, RED_DARK)
+    fake = Box(465, 1595, 500, 135, "FakeStore API", ["External REST data source", "/products, /users"], RED, RED_DARK)
+    sqlite = Box(1190, 1595, 500, 135, "Local SQLite DB", ["orders table", "order_items table"], RED, RED_DARK)
+    device = Box(1915, 1595, 500, 135, "Device Runtime", ["Android / iOS", "Local app sandbox"], RED, RED_DARK)
 
     for box in [user, app, router, di, *screens, *cubits, api, db, models, fake, sqlite, device]:
         draw_box(draw, box)
@@ -371,10 +371,10 @@ def class_diagram() -> None:
 
     draw_group(draw, (80, 1390, 1550, 2125), "Data Models", "#eefbf3")
     model_specs = [
-        (Box(140, 1470, 385, 270, "Product", [], GREEN, GREEN_DARK), ["+ id", "+ title", "+ price", "+ description", "+ category", "+ image", "+ rating"], ["+ fromJson()", "+ toJson()", "+ copyWith()"]),
+        (Box(140, 1470, 385, 315, "Product", [], GREEN, GREEN_DARK), ["+ id", "+ title", "+ price", "+ description", "+ category", "+ image", "+ rating"], ["+ fromJson()", "+ toJson()", "+ copyWith()"]),
         (Box(590, 1470, 330, 175, "Rating", [], WHITE, GREEN_DARK), ["+ rate", "+ count"], ["+ fromJson()", "+ toJson()"]),
         (Box(985, 1470, 385, 190, "CartItem", [], GREEN, GREEN_DARK), ["+ product", "+ quantity", "+ subtotal"], ["+ copyWith()"]),
-        (Box(140, 1810, 385, 245, "Customer", [], PURPLE, PURPLE_DARK), ["+ id", "+ email", "+ username", "+ name", "+ phone", "+ address"], ["+ fromJson()", "+ toJson()"]),
+        (Box(140, 1810, 385, 270, "Customer", [], PURPLE, PURPLE_DARK), ["+ id", "+ email", "+ username", "+ name", "+ phone", "+ address"], ["+ fromJson()", "+ toJson()"]),
         (Box(590, 1810, 330, 210, "Address", [], WHITE, PURPLE_DARK), ["+ city", "+ street", "+ number", "+ zipcode", "+ geolocation"], ["+ fromJson()"]),
         (Box(985, 1810, 330, 155, "GeoLocation", [], WHITE, PURPLE_DARK), ["+ lat", "+ long"], ["+ fromJson()"]),
     ]
@@ -386,8 +386,8 @@ def class_diagram() -> None:
     arrow(draw, model_specs[4][0].right, model_specs[5][0].left, PURPLE_DARK, label="has")
 
     draw_group(draw, (1650, 1390, 3220, 2125), "Persistence Models and Services", "#f4efff")
-    order = Box(1710, 1470, 430, 290, "Order", [], PURPLE, PURPLE_DARK)
-    order_item = Box(2220, 1470, 430, 290, "OrderItem", [], PURPLE, PURPLE_DARK)
+    order = Box(1710, 1470, 430, 335, "Order", [], PURPLE, PURPLE_DARK)
+    order_item = Box(2220, 1470, 430, 335, "OrderItem", [], PURPLE, PURPLE_DARK)
     api = Box(1710, 1830, 430, 230, "ApiService", [], RED, RED_DARK)
     db = Box(2220, 1830, 500, 250, "DatabaseService", [], RED, RED_DARK)
     dio = Box(2810, 1830, 330, 160, "Dio", [], WHITE, RED_DARK)
