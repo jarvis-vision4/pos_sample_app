@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS Sample App — Project Documentation</title>
+<style>
+  :root {
+    --primary: #2D3436;
+    --accent: #0984E3;
+    --success: #00B894;
+    --error: #D63031;
+    --surface: #FFFFFF;
+    --bg: #F5F6FA;
+    --text: #2D3436;
+    --muted: #636E72;
+    --border: #DFE6E9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a1f21 100%);
+    color: #fff;
+    padding: 56px 32px 40px;
+    text-align: center;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 34px; font-weight: 700; }
+  .hero p { margin: 0; color: #b2bec3; font-size: 16px; }
+  .container {
+    max-width: 980px;
+    margin: -28px auto 60px;
+    background: var(--surface);
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(45,52,54,0.08);
+    padding: 40px 44px;
+  }
+  .toc {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 24px;
+    margin-bottom: 36px;
+  }
+  .toc h2 { margin: 0 0 10px; font-size: 16px; color: var(--accent); }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc a { color: var(--primary); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+  h2 {
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+    margin-top: 40px;
+    font-size: 24px;
+    color: var(--primary);
+  }
+  h3 { font-size: 18px; color: var(--primary); margin-top: 26px; }
+  p { margin: 12px 0; }
+  a { color: var(--accent); }
+  code {
+    background: #eef3fb;
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13.5px;
+  }
+  pre {
+    background: #1e272e;
+    color: #d2dae2;
+    padding: 18px 20px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  thead th { background: var(--accent); color: #fff; font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--bg); }
+  .callout {
+    background: #eafaf3;
+    border-left: 4px solid var(--success);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .diagram-note {
+    background: #eef3fb;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 24px;
+  }
+  ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1>POS Sample App</h1>
+    <p>Project Documentation</p>
+  </div>
+
+  <div class="container">
+    <div class="toc">
+      <h2>Table of Contents</h2>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#stack">Technology Stack</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#structure">Project Structure</a></li>
+        <li><a href="#models">Data Models</a></li>
+        <li><a href="#state">State Management (Cubits)</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#screens">Screens &amp; Features</a></li>
+        <li><a href="#di">Dependency Injection</a></li>
+        <li><a href="#build">Build &amp; Run</a></li>
+        <li><a href="#quality">Code Quality Notes</a></li>
+        <li><a href="#diagrams">Diagrams (for Project Report)</a></li>
+      </ol>
+    </div>
+
+    <h2 id="overview">1. Overview</h2>
+    <p><strong>POS Sample App</strong> is a cross-platform (Android / iOS / Web / Desktop) Point-of-Sale
+    demonstration built with <strong>Flutter</strong> and <strong>Dart</strong>. It demonstrates a clean,
+    layered architecture using the <strong>BLoC / Cubit</strong> state-management pattern, a local
+    <strong>SQLite</strong> database for persisted orders, and a remote <strong>REST API</strong>
+    (FakeStore API) for products and customers.</p>
+    <div class="callout">
+      <strong>Key capabilities:</strong>
+      <ul>
+        <li>Browse products by category, search products, and add them to a cart.</li>
+        <li>Choose a customer, review the cart, and <em>checkout</em> (persist the order locally).</li>
+        <li>View a dashboard with <strong>total sales</strong> and <strong>total orders</strong>.</li>
+        <li>Review the list of placed orders.</li>
+      </ul>
+    </div>
+
+    <h2 id="stack">2. Technology Stack</h2>
+    <table>
+      <thead><tr><th>Category</th><th>Package</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>UI Framework</td><td>Flutter 3.x / Dart ^3.12.2</td><td>Cross-platform app</td></tr>
+        <tr><td>State Management</td><td><code>flutter_bloc</code> ^9.1.1</td><td>Cubits + States</td></tr>
+        <tr><td>HTTP Client</td><td><code>dio</code> ^5.10.0</td><td>REST calls to FakeStore API</td></tr>
+        <tr><td>Local DB</td><td><code>sqflite</code> ^2.4.3</td><td>SQLite persistence</td></tr>
+        <tr><td>Image Cache</td><td><code>cached_network_image</code> ^3.4.1</td><td>Product image loading</td></tr>
+        <tr><td>DI</td><td><code>get_it</code> ^9.2.1</td><td>Service locator</td></tr>
+        <tr><td>Utils</td><td><code>intl</code> ^0.20.2, <code>path</code>, <code>path_provider</code></td><td>Formatting, paths</td></tr>
+        <tr><td>Lints</td><td><code>flutter_lints</code> ^6.0.0</td><td>Static analysis</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="architecture">3. Architecture</h2>
+    <p>The app follows a <strong>layered / clean architecture</strong>. Dependencies flow downward; the UI
+    never talks directly to services, only through Cubits.</p>
+    <pre><code>┌───────────────────────────────────────────────────────────────┐
+│ PRESENTATION LAYER (UI)                                       │
+│   DashboardScreen · PosScreen · CartScreen ·                 │
+│   CustomerSelectionScreen · OrderListScreen (+ widgets)       │
+└───────────────────────────┬───────────────────────────────────┘
+                            │ BlocBuilder / BlocSelector
+┌───────────────────────────▼───────────────────────────────────┐
+│ STATE MANAGEMENT (BLoC / Cubit)                                │
+│   PosCubit · CartCubit · DashboardCubit ·                      │
+│   CustomerCubit · OrderListCubit  (+ *State classes)          │
+└───────────────────────────┬───────────────────────────────────┘
+                            │ uses (via GetIt)
+┌───────────────────────────▼───────────────────────────────────┐
+│ DATA MODELS                                                    │
+│   Product · CartItem · Customer · Address · Order · OrderItem  │
+└───────────────────────────┬───────────────────────────────────┘
+                            │
+┌───────────────────────────▼───────────────────────────────────┐
+│ DATA SOURCES & INFRASTRUCTURE                                 │
+│   ApiService (Dio) ──▶ FakeStore REST API                     │
+│   DatabaseService (sqflite) ──▶ SQLite (pos_sample_app_db)     │
+│   locator.dart (GetIt) registers Dio / ApiService / Database   │
+└───────────────────────────────────────────────────────────────┘</code></pre>
+    <div class="diagram-note">A diagram is available at <code>docs/diagrams/architecture_diagram.png</code>.</div>
+
+    <h2 id="structure">4. Project Structure</h2>
+    <pre><code>lib/
+├── main.dart                      # App entry, MultiBlocProvider, GetIt setup
+├── locator/
+│   └── locator.dart               # Dependency injection (GetIt)
+├── routes/
+│   ├── app_routes.dart            # Route name constants
+│   └── app_router.dart            # onGenerateRoute switch
+├── theme/
+│   └── app_theme.dart             # AppTheme (colors, light theme)
+├── utils/
+│   └── price_format.dart          # Currency formatting helper
+├── constants/
+│   └── api_constants.dart         # Base URL & endpoints
+├── data/
+│   ├── models/                    # Product, Rating, CartItem, Customer,
+│   │                              #   Address, GeoLocation, Order, OrderItem
+│   └── services/
+│       ├── api_service.dart       # REST client
+│       └── database_service.dart  # SQLite client
+└── presentation/
+    └── screens/
+        ├── dashboard/             # DashboardCubit/State + DashboardScreen
+        ├── pos/                   # PosCubit/State + PosScreen + widgets
+        │                          #   (CategoryFilter, ProductGrid,
+        │                          #    ProductCard, CartBadge)
+        ├── cart/                  # CartCubit/State + CartScreen + widgets
+        │                          #   (CartItemsList, CartCard,
+        │                          #    CustomerSection, CheckoutSection)
+        ├── customer_selection/    # CustomerCubit/State + Screen
+        └── order_list/            # OrderListCubit/State + Screen + OrderCard</code></pre>
+
+    <h2 id="models">5. Data Models</h2>
+    <table>
+      <thead><tr><th>Model</th><th>Key Fields</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>Product</code></td><td><code>id, title, price, description, category, image, rating</code></td><td>Immutable (<code>const</code> ctor), <code>Rating?</code></td></tr>
+        <tr><td><code>Rating</code></td><td><code>rate, count</code></td><td>Nested in <code>Product</code></td></tr>
+        <tr><td><code>CartItem</code></td><td><code>product: Product, quantity</code></td><td><code>subtotal</code> getter = <code>price * quantity</code></td></tr>
+        <tr><td><code>Customer</code></td><td><code>id, email, username, name, phone, address?</code></td><td>From REST API</td></tr>
+        <tr><td><code>Address</code></td><td><code>city, street, number, zipcode, geolocation?</code></td><td>Nested in <code>Customer</code></td></tr>
+        <tr><td><code>GeoLocation</code></td><td><code>lat, long</code></td><td>Nested in <code>Address</code></td></tr>
+        <tr><td><code>Order</code></td><td><code>id?, orderNumber, customerId, customerName, orderDate, totalQuantity, totalAmount, items</code></td><td>Persisted in SQLite</td></tr>
+        <tr><td><code>OrderItem</code></td><td><code>id?, orderId?, productId, productName, productImage, unitPrice, quantity, subtotal</code></td><td>Child of <code>Order</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="state">6. State Management (Cubits)</h2>
+    <p>Each feature owns a <strong>Cubit</strong> (business logic) and an immutable <strong>State</strong> class.</p>
+    <table>
+      <thead><tr><th>Cubit</th><th>Responsibility</th><th>Emits State</th></tr></thead>
+      <tbody>
+        <tr><td><code>PosCubit</code></td><td>Load products/categories, filter by category, search</td><td><code>PosState</code></td></tr>
+        <tr><td><code>CartCubit</code></td><td>Add/remove/update cart items, select customer, checkout</td><td><code>CartState</code></td></tr>
+        <tr><td><code>DashboardCubit</code></td><td>Load total sales + total orders (parallel)</td><td><code>DashboardState</code></td></tr>
+        <tr><td><code>CustomerCubit</code></td><td>Load &amp; filter customers</td><td><code>CustomerState</code></td></tr>
+        <tr><td><code>OrderListCubit</code></td><td>Load persisted orders</td><td><code>OrderListState</code></td></tr>
+      </tbody>
+    </table>
+    <p>States expose <code>copyWith(...)</code>, convenience getters (<code>isLoading</code>, <code>totalQuantity</code>,
+    <code>totalAmount</code>, <code>canCheckOut</code>), and an <code>error</code> field for failure handling.</p>
+
+    <h2 id="services">7. Services</h2>
+    <h3>ApiService (<code>Dio</code>)</h3>
+    <ul>
+      <li><code>getAllProducts()</code> → <code>GET /products</code></li>
+      <li><code>getCategories()</code> → <code>GET /products/categories</code></li>
+      <li><code>getProductsByCategory(cat)</code> → <code>GET /products/category/$cat</code></li>
+      <li><code>getAllCustomers()</code> → <code>GET /users</code></li>
+    </ul>
+    <h3>DatabaseService (<code>sqflite</code>)</h3>
+    <ul>
+      <li><code>insertOrder(Order)</code> → inserts into <code>orders</code> + child <code>order_items</code></li>
+      <li><code>getAllOrders()</code> → reconstructs <code>Order</code> with <code>items</code></li>
+      <li><code>getTotalSales()</code> → <code>SUM(total_amount)</code></li>
+      <li><code>getOrderCount()</code> → <code>COUNT(*)</code></li>
+    </ul>
+    <pre><code>orders (
+  id INTEGER PK AUTOINCREMENT,
+  order_number INTEGER,
+  customer_id INTEGER,
+  customer_name TEXT,
+  order_date TEXT,
+  total_quantity INTEGER,
+  total_amount REAL
+)
+
+order_items (
+  id INTEGER PK AUTOINCREMENT,
+  order_id INTEGER FK → orders.id ON DELETE CASCADE,
+  product_id INTEGER,
+  product_name TEXT,
+  product_image TEXT,
+  unit_price REAL,
+  quantity INTEGER,
+  subtotal REAL
+)</code></pre>
+    <div class="diagram-note">
+      ER diagram: <code>docs/diagrams/er_diagram.png</code>.<br>
+      Class diagram: <code>docs/diagrams/class_diagram.png</code> (also <code>class_diagram.puml</code>).
+    </div>
+
+    <h2 id="screens">8. Screens &amp; Features</h2>
+    <table>
+      <thead><tr><th>Route</th><th>Screen</th><th>Highlights</th></tr></thead>
+      <tbody>
+        <tr><td><code>/</code></td><td>DashboardScreen</td><td>Total Sales / Total Orders cards, navigation to features</td></tr>
+        <tr><td><code>/pos</code></td><td>PosScreen</td><td>Category filter, product grid, cart badge, add-to-cart</td></tr>
+        <tr><td><code>/cart</code></td><td>CartScreen</td><td>Cart items, customer selection, checkout</td></tr>
+        <tr><td><code>/customer-selection</code></td><td>CustomerSelectionScreen</td><td>Search &amp; pick a customer</td></tr>
+        <tr><td><code>/orders</code></td><td>OrderListScreen</td><td>List of placed orders</td></tr>
+      </tbody>
+    </table>
+    <h3>Theming</h3>
+    <p><code>AppTheme.lightTheme</code> provides a consistent Material 3 look. Centralized colors
+    (<code>accentColor</code>, <code>successColor</code>, <code>errorColor</code>, etc.) are reused across widgets to
+    avoid hardcoded hex values.</p>
+
+    <h2 id="di">9. Dependency Injection</h2>
+    <p><code>lib/locator/locator.dart</code> registers singletons with <strong>GetIt</strong>:</p>
+    <pre><code>getIt.registerSingleton&lt;Dio&gt;(Dio(BaseOptions(baseUrl: ApiConstants.baseUrl, ...)));
+getIt.registerSingleton&lt;DatabaseService&gt;(DatabaseService());
+getIt.registerSingleton&lt;ApiService&gt;(ApiService());</code></pre>
+    <p>Cubits / Widgets resolve dependencies via <code>getIt.get&lt;T&gt;()</code>.</p>
+
+    <h2 id="build">10. Build &amp; Run</h2>
+    <pre><code># Prerequisites: Flutter SDK (>= 3.x), Dart (>= 3.12.2)
+
+flutter pub get
+flutter run                 # run on connected device / emulator
+flutter run -d chrome      # run on web
+
+# Build release artifacts
+flutter build apk --release
+flutter build appbundle --release
+flutter build ios --release
+flutter build web --release
+
+# Static analysis &amp; tests
+flutter analyze
+flutter test</code></pre>
+
+    <h2 id="quality">11. Code Quality Notes</h2>
+    <p>The codebase was refactored for clean code and quality:</p>
+    <ul>
+      <li>Removed <code>print</code>/debug statements and redundant code.</li>
+      <li>Enforced a single theme source (<code>AppTheme</code>) instead of repeated hex colors.</li>
+      <li>Fixed unnecessary widget rebuilds (<code>ProductGrid</code> uses <code>BlocSelector</code> instead of <code>context.watch&lt;CartCubit&gt;()</code>).</li>
+      <li>Removed dead code (e.g., unused <code>PosState.cart</code> parameter, duplicate cart methods).</li>
+      <li>Made models immutable and type-safe (<code>fromJson</code>/<code>toJson</code>/<code>copyWith</code>).</li>
+      <li>Added null-safety to aggregation queries in <code>DatabaseService</code>.</li>
+    </ul>
+
+    <h2 id="diagrams">12. Diagrams (for Project Report)</h2>
+    <table>
+      <thead><tr><th>Diagram</th><th>File</th></tr></thead>
+      <tbody>
+        <tr><td>Architecture (layered)</td><td><code>docs/diagrams/architecture_diagram.png</code></td></tr>
+        <tr><td>Entity Relationship</td><td><code>docs/diagrams/er_diagram.png</code></td></tr>
+        <tr><td>Class Diagram (PlantUML)</td><td><code>docs/diagrams/class_diagram.png</code> / <code>class_diagram.puml</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="footer">POS Sample App — generated project documentation.</div>
+  </div>
+</body>
+</html>
